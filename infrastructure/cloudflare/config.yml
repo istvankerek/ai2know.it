@@ -1,0 +1,12 @@
+# Cloudflare Tunnel konfiguracio
+tunnel: {{TUNNEL_ID}}
+credentials-file: /etc/cloudflare/credentials.json
+
+ingress:
+  - hostname: "{{DOMAIN}}"
+    service: http://caddy:80
+  - hostname: "admin.{{DOMAIN}}"
+    service: http://caddy:80
+  - hostname: "api.{{DOMAIN}}"
+    service: http://caddy:80
+  - service: http_status:404

@@ -1,0 +1,33 @@
+# Build artifacts
+dist/
+build/
+.next/
+target/
+node_modules/
+
+# Generated
+*.generated.ts
+*.generated.rs
+*.min.js
+*.map
+
+# Config & meta
+.env*
+*.lock
+
+# Docker
+docker/
+Dockerfile*
+
+# Monitoring config
+infrastructure/monitoring/grafana/dashboards/*.json
+
+# IDE
+.idea/
+.vscode/
+
+# Test fixtures (nagy mock fajlok)
+tests/fixtures/large-*.json
+
+# TF.js modellek
+apps/admin/src/models/*.bin

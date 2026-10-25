@@ -1,0 +1,21 @@
+groups:
+  - name: sentry
+    rules:
+      - alert: SentryHighErrorRate
+        expr: sentry_unresolved_issues_count > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Sentry: {{ $value }} megoldatlan hiba"
+          description: "50-nel tobb unresolved hiba prod-ban az elmult 5 percben"
+
+      - alert: SentryCriticalError
+        expr: sentry_critical_issues_count > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Sentry: kritikus hiba detektalva!"
+          description: "Legalabb egy critical/fatal szintu hiba tortent prod-ban"
+          runbook: "docs/runbooks/sentry-critical-error.md"

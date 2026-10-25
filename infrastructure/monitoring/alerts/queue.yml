@@ -1,0 +1,10 @@
+groups:
+  - name: queue
+    rules:
+      - alert: QueueDepthHigh
+        expr: nats_jetstream_consumer_num_pending > 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "NATS queue melyseg > 10K pending uzenet"

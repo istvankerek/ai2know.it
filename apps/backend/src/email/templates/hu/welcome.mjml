@@ -1,0 +1,16 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="system-ui, sans-serif" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="24px" font-weight="bold">Udvozlunk!</mj-text>
+        <mj-text>Koszonjuk a regisztraciod a ai2know.it rendszerben.</mj-text>
+        <mj-button href="{{VERIFY_URL}}">Fiok megerositese</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

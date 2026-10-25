@@ -1,0 +1,132 @@
+name: rtk-onboarding
+description: >
+  RTK (https://rtk-ai.app) telepitese es konfiguralasa egy uj fejleszto gepen.
+  9 lepeses workflow: binary install, Claude/Codex/Gemini setup, shared kernel
+  update, verify, baseline mertes, routine config, optionalis Grafana setup.
+  Estimated duration: 30-45 min.
+license: Everengine v7.2
+version: 1.0
+estimated_duration: "30-45 min"
+
+prerequisites:
+  - macOS vagy Linux
+  - Homebrew telepitett (macOS)
+  - .aios-cli/ shared kernel rendelkezesre all
+
+steps:
+  - id: install_binary
+    name: "1. RTK binary telepitese"
+    description: "Homebrew vagy curl install"
+    type: bash
+    required: true
+    bash: |
+      if command -v brew &> /dev/null; then
+        brew install rtk
+      elif command -v curl &> /dev/null; then
+        curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+      else
+        echo "[HIBA] sem brew, sem curl. Manualis install: https://github.com/rtk-ai/rtk/releases"
+        exit 1
+      fi
+      rtk --version
+
+  - id: claude_code_setup
+    name: "2. Claude Code PreToolUse hook setup"
+    description: "rtk init -g general Claude Code-hoz"
+    type: bash
+    required: true
+    bash: rtk init -g
+
+  - id: codex_setup
+    name: "3. Codex CLI setup (opcionalis)"
+    description: "rtk init -g --codex (csak ha codex telepitve)"
+    type: bash
+    required: false
+    bash: |
+      if command -v codex &> /dev/null; then
+        rtk init -g --codex
+      else
+        echo "[SKIP] codex CLI nincs telepitve"
+      fi
+
+  - id: gemini_setup
+    name: "4. Gemini CLI setup (opcionalis)"
+    description: "rtk init -g --gemini (csak ha gemini telepitve)"
+    type: bash
+    required: false
+    bash: |
+      if command -v gemini &> /dev/null; then
+        rtk init -g --gemini
+      else
+        echo "[SKIP] gemini CLI nincs telepitve"
+      fi
+
+  - id: shared_kernel_update
+    name: "5. Shared kernel CLI configs regeneralas"
+    description: "CLAUDE.md/AGENTS.md/GEMINI.md frissites RTK reference szekcioval"
+    type: bash
+    required: true
+    bash: ./.aios-cli/scripts/generate-cli-configs.sh all
+
+  - id: verify
+    name: "6. Verify"
+    description: "rtk init --show: hookok regisztralva?"
+    type: bash
+    required: true
+    bash: rtk init --show
+
+  - id: baseline
+    name: "7. Baseline mertes"
+    description: "Kezdeti rtk gain output mentese (jovobeli osszehasonlitashoz)"
+    type: bash
+    required: true
+    bash: |
+      mkdir -p .claude/memory/baselines
+      rtk gain --all --format json > .claude/memory/baselines/rtk-baseline-$(date +%Y%m%d).json
+      echo "[OK] Baseline mentve"
+
+  - id: configure_routine
+    name: "8. Daily gain export routine aktivalas"
+    description: ".claude/routines/scheduled/daily-rtk-gain-export.yml ervenyesseg"
+    type: bash
+    required: true
+    bash: |
+      if [ -f .claude/routines/scheduled/daily-rtk-gain-export.yml ]; then
+        echo "[OK] daily-rtk-gain-export.yml jelen van"
+      else
+        echo "[FIGYELMEZTETES] routine fajl hianyzik"
+      fi
+
+  - id: grafana_setup
+    name: "9. Grafana dashboard setup (manualis)"
+    description: "Grafana #12 dashboard: RTK Token Savings panel (skeleton scope-on kivul)"
+    type: manual
+    required: false
+    instructions: |
+      1. Importald a Grafana #12 dashboardot (RTK Token Savings)
+      2. Konfiguraljd a Prometheus pushgateway-t metrika fogadashoz
+      3. Allitsd be az alertet: rtk_session_adoption_rate < 0.7
+
+post_workflow:
+  - description: "Memory observation save"
+    type: bash
+    bash: |
+      claude memory save \
+        --type config \
+        --title "RTK onboarding kesz" \
+        --content "RTK $(rtk --version) telepitve, baseline mentve" \
+        --tags "rtk,onboarding,setup" 2>/dev/null || true
+
+  - description: "Slack #dev-tools ertesites (opcionalis)"
+    type: manual
+    instructions: "Postold a baseline-t a #dev-tools csatornaba"
+
+triggers:
+  manual: true
+  cli: "/project:workflow run rtk-onboarding"
+
+references:
+  - source: "v7.2 patch Section 5"
+  - skill: "rtk-optimizer"
+  - skill: "rtk-tee-recovery"
+  - script: ".aios-cli/scripts/install-rtk.sh"

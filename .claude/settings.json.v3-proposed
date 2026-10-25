@@ -1,0 +1,71 @@
+{
+  "_comment": "v3.0 javasolt settings.json. A felhasznalonak kell manualisan atmasolnia a valodi settings.json-ba, mert a jelenlegi deny lista blokkolja a Claude Code-ot magatol modositsa. Atmasolas: cp .claude/settings.json.v3-proposed .claude/settings.json",
+  "_version": "3.0",
+  "_changes": [
+    "PostToolUse hook sor bovult: auto-lint -> check-placeholders -> auto-commit",
+    "Hozzaadva: .claude/hooks/check-placeholders.sh (figyelmeztet TODO/placeholder-re)",
+    "Hozzaadva: .claude/hooks/auto-commit.sh (WIP branch-re commitol)"
+  ],
+  "permissions": {
+    "allow": [
+      "Read **/*",
+      "Write src/**",
+      "Write tests/**",
+      "Write docs/**",
+      "Write .claude/prompt-log/**",
+      "Bash(npm test)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx prettier --write *)",
+      "Bash(./scripts/*.sh)"
+    ],
+    "deny": [
+      "Write .env*",
+      "Write CLAUDE.md",
+      "Write .claude/settings.json",
+      "Write docker-compose.prod.yml",
+      "Write infrastructure/cloudflare/credentials.json",
+      "Bash(rm -rf *)",
+      "Bash(docker compose down -v)",
+      "Bash(DROP *)",
+      "Bash(DELETE FROM *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/check-safety.sh" },
+          { "type": "command", "command": "bash .claude/hooks/check-injection.sh" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/check-bash-safety.sh" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/auto-lint.sh" },
+          { "type": "command", "command": "bash .claude/hooks/check-placeholders.sh" },
+          { "type": "command", "command": "bash .claude/hooks/auto-commit.sh" }
+        ]
+      }
+    ],
+    "Notification": [
+      { "hooks": [{ "type": "command", "command": "bash .claude/hooks/notify.sh" }] }
+    ],
+    "SessionEnd": [
+      { "hooks": [{ "type": "command", "command": "bash .claude/hooks/save-prompt-log.sh" }] }
+    ]
+  },
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+  }
+}

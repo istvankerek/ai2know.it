@@ -1,0 +1,11 @@
+{
+  "dashboard": {
+    "title": "network-io",
+    "uid": "network-io",
+    "version": 1,
+    "panels": [],
+    "time": { "from": "now-1h", "to": "now" },
+    "refresh": "30s"
+  },
+  "overwrite": true
+}

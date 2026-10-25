@@ -1,0 +1,8 @@
+# Chaos Scenario: Backend CPU stress 95%
+name: cpu-stress
+description: Backend CPU terheles 95% 10 percig
+target: backend
+action: cpu-stress
+load_percent: 95
+duration: 10m
+runbook: docs/runbooks/high-cpu-alert.md

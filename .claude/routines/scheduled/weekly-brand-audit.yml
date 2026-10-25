@@ -1,0 +1,72 @@
+# .claude/routines/scheduled/weekly-brand-audit.yml
+# Heti brand audit minden user-facing fajlra (v6.1)
+
+name: weekly-brand-audit
+description: >
+  Heti brand-konzisztencia audit minden user-facing fajlra
+  (apps/admin, apps/frontend, docs/marketing, email-templates).
+  Anti-style talalatok osszesitese + voice.md hangnem-elteres.
+  Output: docs/brand-audit/{YYYY-MM-DD}.md riport.
+
+trigger:
+  type: scheduled
+  cron: "0 8 * * MON"          # Hetfo 08:00 UTC
+
+prompt: |
+  Futtasd le a /project:brand-check ekvivalenset az alabbi fajlokra:
+    - apps/admin/src/**/*.tsx (UI strings)
+    - apps/frontend/src/**/*.tsx
+    - docs/marketing/**/*.md
+    - email-templates/**/*.{html,mjml}
+    - landing/**/*.{html,md}
+
+  Identity context betoltes:
+    - .claude/identity/voice.md
+    - .claude/identity/anti-style.md (10 kategoria)
+    - .claude/identity/brand-{detected}.md (per-fajl detektalas)
+    - .claude/identity/audience/{detected}.md
+
+  Audit per fajl (anti-style.md 1-10):
+    1. Em-dash, 2. AI-frazisok, 3. Ures szuperlatívuszok,
+    4. Empty hype, 5. Marketing-szleng, 6. Ures igeret,
+    7. Ures CTA, 8. False intimacy, 9. Korporátos passziv,
+    10. AI watermark
+
+  Plusz brand-tores: megszunt IdP nev hasznalata (→ skillpass.id)
+
+  Output: docs/brand-audit/{ma}.md
+  ```markdown
+  # Brand Audit – {date}
+
+  ## Osszesites
+  - Vizsgalt fajlok: X
+  - Brand-aligned: Y (>= 9/10)
+  - Warning (7-8/10): Z
+  - 🔴 Block (< 7/10): W
+
+  ## Top 5 problema
+  1. {pattern}: {fajlok szama} alkalommal
+  ...
+
+  ## Reszletek per fajl
+  - {fajl}: score X/10, {warnings count}
+  ...
+
+  ## Javaslat
+  - Top 3 javitas a kovetkezo sprint-re
+  ```
+
+  Ha block (< 7/10) → Slack #brand alert + @brand-lead mention
+
+model: claude-sonnet-4-6
+advisor:
+  model: claude-opus-4-7
+  max_uses: 1
+batch_api: true                  # Non-realtime → -50% Batch API
+connectors:
+  - github
+  - slack
+permissions:
+  - read_repo
+  - write_docs
+  - post_slack_message

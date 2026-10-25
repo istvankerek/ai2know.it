@@ -1,0 +1,139 @@
+# .claude/workflows/autodream-memory-cycle.yml
+# Memory v2 5-fazisu consolidation (v7.1).
+# Lecsereli a v6.5 weekly-memory-curate.yml egylepeses Routine-t.
+
+name: autodream-memory-cycle
+description: >
+  Memory v2 5-fazisu consolidation. Megelozi a context pollution-t, konvertalja
+  az observation-oket pattern-ekke, megoldja a konfliktusokat, prune-olja a noise-t,
+  frissiti az indexet.
+
+estimated_duration: "30-60 min"
+
+trigger:
+  type: scheduled
+  cron: "0 19 * * SUN"               # Vasarnap 19:00 UTC
+  enabled_when: env.MEMORY_V2_ENABLED == "true"
+
+steps:
+  - id: phase_1_fork
+    name: "Phase 1: Fork (Isolation)"
+    description: >
+      Uj sub-session, fresh context. Megakadalyozza hogy a jelenlegi session
+      "fertozze" a memoriat sajat bias-aival.
+    bash: |
+      WORK_DIR=$(mktemp -d -t autodream-XXXXXX)
+      sqlite3 .claude/memory/observations.db ".backup $WORK_DIR/snapshot.db"
+      echo "WORK_DIR=$WORK_DIR" > /tmp/autodream-state
+    estimated_duration: "1 min"
+
+  - id: phase_2_distill
+    name: "Phase 2: Distillation & Merge"
+    description: >
+      Az observations.db tartalmabol HARD RULE-okat distillal.
+      A 7-30 nap alatti observations-eket csoportositja tag es type szerint.
+    skill: memory-curator
+    prompt: |
+      Olvasd be a snapshot.db utolso 30 napjat ($WORK_DIR/snapshot.db).
+      Csoportositsd tag + type szerint.
+
+      Distillalasi szabalyok:
+        IF count(tag) >= 3 AND type IN ('pattern', 'gotcha')
+        THEN propose patterns.md entry
+
+        IF type='bugfix' AND severity='critical'
+        THEN propose mistakes.md entry (avoid duplicates)
+
+      Output: $WORK_DIR/distilled.md
+    requires: [phase_1_fork]
+    estimated_duration: "10-20 min"
+
+  - id: phase_3_conflict
+    name: "Phase 3: Conflict Resolution"
+    description: >
+      A distilled uj mintak utkozhetnek a meglevo patterns.md-vel.
+      Resolution: newer overrides older, higher count wins, manual review jelolessel.
+    skill: memory-curator
+    prompt: |
+      Olvasd be: $WORK_DIR/distilled.md + .claude/memory/patterns.md
+
+      Detect konfliktusokat:
+        - Direct contradiction
+        - Outdated assumption
+        - Mistake-et a meglevo pattern megelozhette volna
+
+      Resolution:
+        - Auto-resolve egyertelmu esetekben
+        - 👤 flag manual review esetekben
+
+      Output: $WORK_DIR/resolved.md
+    requires: [phase_2_distill]
+    estimated_duration: "5-10 min"
+
+  - id: phase_4_prune
+    name: "Phase 4: Pruning (Entropy Control)"
+    description: >
+      Eltavolitja az alacsony erteku noise-t. VIGYAZAT: prune elott mindig backup!
+      A consolidation-lock.sh-t hasznalja race protection-hez.
+    bash: |
+      source scripts/consolidation-lock.sh
+      acquire_lock || exit 1
+
+      mkdir -p .claude/memory/backup
+      cp .claude/memory/observations.db \
+         ".claude/memory/backup/observations-pre-prune-$(date +%Y%m%d).db"
+
+      sqlite3 .claude/memory/observations.db <<EOF
+      DELETE FROM observations
+      WHERE timestamp < datetime('now', '-90 days')
+        AND type NOT IN ('mistake', 'critical-bugfix');
+
+      VACUUM;
+      EOF
+    requires: [phase_3_conflict]
+    estimated_duration: "2-5 min"
+
+  - id: phase_5_sync
+    name: "Phase 5: Index Synchronization"
+    description: >
+      Frissiti az observations-index.md-t (auto-generated).
+      Promote validated patterns. Slack post #dev-memory.
+    bash: |
+      source /tmp/autodream-state
+
+      ./scripts/regenerate-memory-index.sh 2>/dev/null || true
+
+      cat "$WORK_DIR/resolved.md" >> .claude/memory/patterns.md 2>/dev/null || true
+
+      if [ -n "$SLACK_WEBHOOK" ]; then
+        curl -X POST "$SLACK_WEBHOOK" \
+          -H "Content-Type: application/json" \
+          -d "{\"text\": \"AutoDream cycle complete: $(date +%Y-W%V)\"}"
+      fi
+
+      rm -rf "$WORK_DIR"
+      rm -f /tmp/autodream-state
+    requires: [phase_4_prune]
+    estimated_duration: "2-5 min"
+
+post_workflow:
+  - name: "Memory observation save"
+    bash: |
+      claude memory save \
+        --type discovery \
+        --title "AutoDream cycle $(date +%Y-W%V)" \
+        --tags "autodream,memory-curation,routine" 2>/dev/null || true
+
+success_criteria:
+  - All 5 phases completed
+  - Backup created before pruning
+  - No corruption in observations.db (integrity_check passes)
+
+model: claude-sonnet-4-6
+advisor:
+  model: claude-opus-4-7
+  max_uses: 1
+permissions:
+  - read_repo
+  - write_memory
+  - post_slack_message

@@ -1,0 +1,26 @@
+{
+  "app_name": "ai2know.it",
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search...",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "error": "An error occurred",
+    "success": "Saved successfully"
+  }
+}

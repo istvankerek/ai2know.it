@@ -1,0 +1,22 @@
+# Projektek registere
+# Formatum: NAME | PATH | DEPLOYED_VERSION
+# Sorok '#'-tel kezdodve kommentek
+#
+# Meglevo projektek (production-ben vagy active dev)
+aio.broker  | /Users/everengine/Documents/dev/aio-broker   | 8.0.0
+aios        | /Users/everengine/Documents/dev/aios         | 7.7.0
+
+# Uj projektek (bootstrap, lokalis dev)
+aegis       | /Users/everengine/Documents/dev/aegis        | 7.7.0
+aila        | /Users/everengine/Documents/dev/aila         | 7.7.0
+aibos       | /Users/everengine/Documents/dev/aibos        | 7.7.0
+aibos.club  | /Users/everengine/Documents/dev/aibos.club   | 7.7.0
+ingatlanok  | /Users/everengine/Documents/dev/ingatlanok   | 7.7.0
+sqe         | /Users/everengine/Documents/dev/sqe          | 7.7.0
+cjm         | /Users/everengine/Documents/dev/cjm          | 7.7.0
+cmn         | /Users/everengine/Documents/dev/cmn          | 7.7.0
+aiaudit     | /Users/everengine/Documents/dev/aiaudit      | 7.7.0
+wp-monitor  | /Users/everengine/Documents/dev/aibootcamp/wp-monitor | 7.7.0
+aiagentday.hu | /Users/everengine/Documents/dev/aibootcamp/aiagentday.hu | 7.7.0
+aivox       | /Users/everengine/Documents/dev/aivox        | 8.0.0
+keep        | /Users/everengine/Documents/dev/keep         | 8.0.0

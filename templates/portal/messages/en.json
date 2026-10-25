@@ -1,0 +1,44 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "open": "Open",
+    "close": "Close"
+  },
+  "auth": {
+    "login": "Continue with SkillPass",
+    "logout": "Log out",
+    "login_required": "You need to sign in to continue.",
+    "session_expired": "Your session has expired, please sign in again."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "trainings": "My Trainings",
+    "catalog": "Catalog",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Welcome to the portal"
+  },
+  "trainings": {
+    "title": "My Trainings",
+    "empty": "You have not attended any training yet.",
+    "status_enrolled": "Enrolled",
+    "status_in_progress": "In Progress",
+    "status_completed": "Completed",
+    "status_cancelled": "Cancelled"
+  },
+  "account_center": {
+    "profile": "Personal data",
+    "security": "Security and sign-in",
+    "documents": "Documents",
+    "access": "My access",
+    "invoices": "Invoices",
+    "open_account_center": "Open SkillPass.ID account"
+  }
+}

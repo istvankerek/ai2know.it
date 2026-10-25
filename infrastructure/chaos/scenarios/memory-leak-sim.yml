@@ -1,0 +1,8 @@
+# Chaos Scenario: Memory leak szimulacio
+name: memory-leak-sim
+description: Backend memory +100MB/ora leptekben
+target: backend
+action: memory-stress
+rate_mb_per_hour: 100
+duration: 30m
+alert_threshold_mb: 512

@@ -1,0 +1,92 @@
+{
+  "$schema": "./permissions.schema.json",
+  "schema_version": "1.0.0",
+  "realm": "aibootcamp",
+  "source": "templates/admin-contract/contracts/authorization/permissions.json",
+  "normative_role_matrix": "contracts/authorization/role-matrix.csv",
+  "prefix": "aibootcamp.",
+  "separator": ".",
+  "implicit_default": "DENY",
+  "wildcards_allowed": false,
+  "missing_permission_behavior": "DENY",
+  "groups": [
+    {
+      "key": "courses",
+      "name": "Kurzusok",
+      "permissions": [
+        {
+          "code": "aibootcamp.courses.list",
+          "description": "Kurzusok listázása"
+        },
+        {
+          "code": "aibootcamp.courses.view",
+          "description": "Kurzus részleteinek megtekintése"
+        },
+        {
+          "code": "aibootcamp.courses.create",
+          "description": "Új kurzus létrehozása"
+        },
+        {
+          "code": "aibootcamp.courses.edit",
+          "description": "Kurzus szerkesztése"
+        },
+        {
+          "code": "aibootcamp.courses.delete",
+          "description": "Kurzus soft törlése és visszaállítása"
+        },
+        {
+          "code": "aibootcamp.courses.publish",
+          "description": "Kurzus publikálása (draft → published)"
+        },
+        {
+          "code": "aibootcamp.courses.history",
+          "description": "Kurzus auditnapló megtekintése"
+        }
+      ]
+    },
+    {
+      "key": "students",
+      "name": "Diákok",
+      "permissions": [
+        {
+          "code": "aibootcamp.students.list",
+          "description": "Diákok listázása"
+        },
+        {
+          "code": "aibootcamp.students.view",
+          "description": "Diák adatainak és haladásának megtekintése"
+        },
+        {
+          "code": "aibootcamp.students.export",
+          "description": "Diák adatok exportálása"
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "code": "superadmin",
+      "name": "Szuperadminisztrátor",
+      "grant_rule": "ALL",
+      "notes": "Minden jogosultság automatikusan megadva"
+    },
+    {
+      "code": "admin",
+      "name": "Adminisztrátor",
+      "grant_rule": "EXPLICIT",
+      "notes": "Teljes írási és törlési hozzáférés, publish nélkül"
+    },
+    {
+      "code": "editor",
+      "name": "Szerkesztő",
+      "grant_rule": "EXPLICIT",
+      "notes": "Kurzusok megtekintése és szerkesztése, törlés nélkül"
+    },
+    {
+      "code": "viewer",
+      "name": "Megfigyelő",
+      "grant_rule": "EXPLICIT",
+      "notes": "Csak olvasási hozzáférés"
+    }
+  ]
+}

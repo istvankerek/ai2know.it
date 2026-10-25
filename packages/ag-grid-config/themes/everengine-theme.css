@@ -1,0 +1,13 @@
+/* Everengine AG Grid tema */
+.ag-theme-everengine {
+  --ag-foreground-color: #1a1a2e;
+  --ag-background-color: #ffffff;
+  --ag-header-background-color: #f8f9fa;
+  --ag-header-foreground-color: #1a1a2e;
+  --ag-row-hover-color: #f0f4f8;
+  --ag-selected-row-background-color: #e3f2fd;
+  --ag-font-family: system-ui, -apple-system, sans-serif;
+  --ag-font-size: 14px;
+  --ag-row-height: 42px;
+  --ag-header-height: 48px;
+}

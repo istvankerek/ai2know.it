@@ -1,0 +1,68 @@
+# {{PROJECT_NAME}} – Codex CLI Agent Instructions
+
+> Ez a fájl automatikusan generált.
+> Forrás: `.aios-cli/core/` + `.aios-cli/adapters/codex/AGENTS.md.template`
+> Módosítsd a forrást, ne ezt a fájlt.
+> Generálás: `.aios-cli/scripts/generate-cli-configs.sh codex`
+
+@/Users/everengine/.codex/RTK.md
+
+{{CORE_INSTRUCTIONS}}
+
+{{CORE_ECOSYSTEM}}
+
+{{CORE_LESSONS}}
+
+---
+
+## Codex CLI – Specifikus Kiegészítések
+
+### Mikor használd a Codex CLI-t
+
+A Codex CLI fast-first fejlesztésre és high-throughput feladatokra optimalizált:
+- Scoped implementáció elfogadott terv után
+- Tömeges fájl módosítás (rename, format, egyszerű refactor)
+- Batch kód generálás sablonból
+- Gyors lookup és regex alapú keresés/csere
+- Read-only review külön agenttel
+
+### Fast-first model routing
+
+- Default: `gpt-5.3-codex`, medium reasoning
+- Fast: `gpt-5.3-codex-spark`, low reasoning (`explorer_fast`)
+- Standard worker: `gpt-5.3-codex` (`worker_standard`)
+- Deep review: `gpt-5.5`, xhigh reasoning (`reviewer_deep`) csak security/prod/architecture/migration
+
+### Plan-v workflow
+
+- Komplex munka előtt hozd létre a következő `specification/plan-vN/` mappát.
+- Tervet fázisonként Markdown fájlba írj.
+- Implementáció után fázisonként ellenőrizd vissza a plan mappából.
+- Unit/validation → git save point → non-prod deploy → smoke → javítás → végső commit.
+- Prod deploy csak explicit jóváhagyással.
+
+### Projekt skill rendszer
+
+Codex nem csak a globális skill listára támaszkodik ebben a projektben.
+Ha a feladat illeszkedik egy `.aios-cli/skills/*/SKILL.md` leírására,
+olvasd be az adott skillt, majd csak a szükséges reference fájlokat.
+
+{{SKILL_INDEX}}
+
+### Konvenciók
+
+{{CORE_CONVENTIONS_SUMMARY}}
+
+### Custom agentek
+
+- `.codex/agents/explorer-fast.toml` – read-only lookup
+- `.codex/agents/worker-standard.toml` – scoped implementation
+- `.codex/agents/reviewer-deep.toml` – high-risk read-only review
+
+Subagent csak akkor, ha a részfeladat független, jól körülhatárolt, és csökkenti a main contextet.
+
+### Aktív CLI
+
+`AIOS_ACTIVE_CLI={{ACTIVE_CLI}}`
+
+Váltáshoz futtasd: `.aios-cli/scripts/generate-cli-configs.sh codex`

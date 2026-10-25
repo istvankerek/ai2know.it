@@ -1,0 +1,62 @@
+# Monitoring stack – Prometheus, Grafana, Loki, exporterek
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ${PROJECT_PREFIX:-ee}_prometheus
+    volumes:
+      - ../infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ../infrastructure/monitoring/alerts:/etc/prometheus/alerts
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=30d'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ${PROJECT_PREFIX:-ee}_grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - ../infrastructure/monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ../infrastructure/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3002:3000"
+    depends_on:
+      - prometheus
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: ${PROJECT_PREFIX:-ee}_alertmanager
+    volumes:
+      - ../infrastructure/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+
+  loki:
+    image: grafana/loki:latest
+    container_name: ${PROJECT_PREFIX:-ee}_loki
+    ports:
+      - "3100:3100"
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: ${PROJECT_PREFIX:-ee}_node_exporter
+    ports:
+      - "9100:9100"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: ${PROJECT_PREFIX:-ee}_cadvisor
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    ports:
+      - "8082:8080"
+
+volumes:
+  prometheus_data:
+  grafana_data:

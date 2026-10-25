@@ -1,0 +1,62 @@
+# .claude/routines/webhook/pr-bespoke-review.yml
+# GitHub PR webhook (v5.6, parallel review v6.2)
+
+name: pr-bespoke-review
+description: >
+  Team checklist review minden uj PR-en: security + performance + Everengine
+  konvenciok. Inline comment-ek az erintett sorokon. Two-stage parallel
+  review (v6.2): spec compliance + code quality.
+
+trigger:
+  type: webhook
+  source: github
+  events:
+    - pull_request.opened
+    - pull_request.synchronize
+  filters:
+    - base_branch: main
+    - exclude_authors: [dependabot, renovate]
+
+prompt: |
+  Uj PR erkezett: ${pr.html_url}
+  Title: ${pr.title}
+  Author: ${pr.user.login}
+  Files changed: ${pr.changed_files}
+
+  Futtasd le a /project:review es /project:ultrareview ekvivalenset
+  PARALLEL pattern (v6.2):
+
+  Reviewer A: SPEC COMPLIANCE
+    - Megfelel-e az acceptance criteria-nak (tasks/todo.md)?
+    - Minden elem implementalva?
+    - Scope creep-ek?
+
+  Reviewer B: CODE QUALITY (7 szempont)
+    1. Security (secret, SQLi, XSS, authz)
+    2. Performance (N+1, O(n²), blocking I/O)
+    3. Correctness (null, race condition, missing await)
+    4. Everengine konvenciok (feature-based, Zod, magyar doc)
+    5. Teszt lefedettseg
+    6. Dokumentacio (API changes → docs/)
+    7. Breaking changes (semver, migration plan)
+
+  Decision: SHIP × SHIP = ✅ MERGE | egyebb = 🔴 FIX
+
+  Minden kritikus vagy kozepes problema → inline comment a PR-en.
+  Sulyos problema → BLOCK tag + @mention a tech-leads team-et.
+
+repo: "{{REPO_OWNER}}/{{REPO_NAME}}"
+connectors:
+  - github
+model: claude-sonnet-4-6
+advisor:
+  model: claude-opus-4-7        # Realtime review, 4.7 kell
+  max_uses: 5
+mcp_servers:
+  - code-review-graph           # Blast radius query
+  - sentry                       # Historical error patterns
+
+permissions:
+  - read_repo
+  - comment_pr
+  - tag_team

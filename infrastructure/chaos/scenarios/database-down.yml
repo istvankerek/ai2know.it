@@ -1,0 +1,8 @@
+# Chaos Scenario: PostgreSQL primary kill → standby failover
+name: database-down
+description: PG primary leallitasa, standby failover teszteles
+target: postgresql-primary
+action: kill
+duration: 5m
+expected_recovery: 30s
+runbook: docs/runbooks/database-recovery.md

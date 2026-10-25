@@ -1,0 +1,15 @@
+# Teszt kornyezet – izolalt adatbazisok
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}_test
+
+  mongodb:
+    command: ["mongod", "--port", "27018"]
+    ports:
+      - "27018:27018"
+
+  backend:
+    environment:
+      - APP_ENV=test
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}_test

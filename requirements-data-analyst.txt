@@ -1,0 +1,30 @@
+# Optional Data Analyst Layer dependencies (Python 3.10+)
+# Aktivalas: settings.json → "DATA_ANALYST_LAYER_ENABLED": "true"
+# Telepites: pip install -r requirements-data-analyst.txt
+#
+# A Data Analyst layer kapcsolja be a notebook + viz + export pipeline
+# skill-eket. Csak akkor kell, ha BI / report / cohort elemzes / heti
+# Excel/PDF kimenet kell. Pure backend / frontend / devops projekteknel
+# NE installald (felesleges függoseg).
+
+# Notebook
+jupyter>=1.0
+ipykernel>=6.20
+
+# Dataframe + viz
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+seaborn>=0.13
+plotly>=5.0
+
+# Export pipeline
+openpyxl>=3.1               # XLSX
+python-pptx>=0.6            # PPTX
+fpdf2>=2.7                  # PDF
+reportlab>=4.0              # PDF (alternative)
+
+# Adatkapcsolat
+psycopg2-binary>=2.9        # PostgreSQL
+pymongo>=4.5                # MongoDB
+sqlalchemy>=2.0             # ORM

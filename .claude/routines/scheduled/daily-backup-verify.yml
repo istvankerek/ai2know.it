@@ -1,0 +1,33 @@
+# .claude/routines/scheduled/daily-backup-verify.yml
+# Napi backup integrity check (v5.6)
+
+name: daily-backup-verify
+description: >
+  Hetzner S3 WORM backup integrity ellenorzes az elmult 24 ora backup-jaira.
+
+trigger:
+  type: scheduled
+  cron: "0 3 * * *"             # Napi 03:00 UTC
+
+prompt: |
+  Verifikald az elmult 24 ora backup-jait:
+    - PostgreSQL pg_dump (orankenti snapshot)
+    - MongoDB mongodump (napi)
+    - MinIO objects mirror Hetzner S3 WORM-ra
+
+  Ellenorzes:
+    1. Backup file existence (S3 listing)
+    2. Hash verification (SHA256)
+    3. Random restore test (1 random tablat)
+    4. Object Lock compliance (90 nap retention)
+
+  Ha minden OK: silent (no alert)
+  Ha hiba: Slack #ops alert + runbook link
+
+model: claude-haiku-4-5-20251001
+connectors:
+  - slack
+permissions:
+  - read_s3
+  - read_postgres
+  - post_slack_message

@@ -1,0 +1,9 @@
+# Chaos Scenario: API → DB +500ms latency
+name: latency-injection
+description: Mesterseges kesleltetes a backend es az adatbazis kozott
+target: postgresql-primary
+action: latency
+latency_ms: 500
+jitter_ms: 100
+duration: 5m
+slo_check: "histogram_quantile(0.95, http_request_duration_seconds_bucket) < 1.0"

@@ -1,0 +1,364 @@
+{
+  "version": 1,
+  "source": "SkillPass.ID workspace shell: AppManifest -> NavSection -> NavItem (plan-v15 F3)",
+  "item_format": "string = skill id; object = {id, badge?}",
+  "apps": [
+    {
+      "app_id": "identity",
+      "name": {
+        "hu": "Identitás (SkillPass.ID)",
+        "en": "Identity (SkillPass.ID)"
+      },
+      "icon": "fingerprint",
+      "accent": "#0c87eb",
+      "paths": [
+        "**/auth/**",
+        "**/oidc*",
+        "**/skillpass*",
+        "**/portal/**",
+        "**/profile/**",
+        "**/account/**"
+      ],
+      "nav": [
+        {
+          "label": { "hu": "Belépés", "en": "Sign-in" },
+          "items": [{ "id": "skillpass-auth", "badge": "P0" }, "login-history"]
+        },
+        {
+          "label": { "hu": "Profil", "en": "Profile" },
+          "items": ["profile-system", "appearance-settings"]
+        },
+        {
+          "label": { "hu": "Ügyfélportál", "en": "Client portal" },
+          "items": [
+            { "id": "skillpass-portal", "badge": "P0" },
+            "skillpass-app-launcher"
+          ]
+        }
+      ]
+    },
+    {
+      "app_id": "admin",
+      "name": { "hu": "Admin (aibos.space)", "en": "Admin (aibos.space)" },
+      "icon": "layout-dashboard",
+      "accent": "#111827",
+      "paths": [
+        "contracts/admin/**",
+        "contracts/authorization/**",
+        "**/admin/**",
+        "**/permission*",
+        "**/menu-config*"
+      ],
+      "nav": [
+        {
+          "label": { "hu": "Contract", "en": "Contract" },
+          "items": [
+            { "id": "aibos-admin-contract", "badge": "P0" },
+            "api-documentation",
+            "api-keys-management"
+          ]
+        },
+        {
+          "label": { "hu": "DLA / CRUD", "en": "DLA / CRUD" },
+          "items": [
+            "crud-dla-module",
+            "dla-menu-pattern",
+            "crud-generator",
+            "list-view",
+            "form-builder",
+            "admin-experience",
+            "dashboard-widgets",
+            "command-palette"
+          ]
+        },
+        {
+          "label": { "hu": "Jogosultság", "en": "Permissions" },
+          "items": [
+            { "id": "permission-rbac", "badge": "P0" },
+            "roles-permissions"
+          ]
+        },
+        {
+          "label": { "hu": "Audit", "en": "Audit" },
+          "items": [
+            { "id": "audit-trail-mandatory", "badge": "P0" },
+            "activity-log"
+          ]
+        },
+        {
+          "label": { "hu": "Rendszer", "en": "System" },
+          "items": [
+            "alert-system",
+            "analytics-dashboard",
+            "backup-manager-ui",
+            "feature-flags",
+            "maintenance-mode",
+            "safedata-mode",
+            "module-marketplace",
+            "taxonomy-system",
+            "support-faq"
+          ]
+        }
+      ]
+    },
+    {
+      "app_id": "frontend",
+      "name": { "hu": "Frontend", "en": "Frontend" },
+      "icon": "monitor",
+      "accent": "#7c3aed",
+      "paths": [
+        "apps/frontend/**",
+        "**/components/**",
+        "**/*.tsx",
+        "**/locales/**",
+        "**/messages/**"
+      ],
+      "nav": [
+        {
+          "label": { "hu": "UI", "en": "UI" },
+          "items": [
+            "frontend-design",
+            "skeleton-loading",
+            "theme-system",
+            "file-upload",
+            "file-manager",
+            "tf-intelligent-menu",
+            "coming-soon-notify"
+          ]
+        },
+        {
+          "label": { "hu": "Nyelv", "en": "Language" },
+          "items": [{ "id": "i18n-required", "badge": "P0" }, "i18n-setup"]
+        }
+      ]
+    },
+    {
+      "app_id": "backend",
+      "name": { "hu": "Backend", "en": "Backend" },
+      "icon": "server",
+      "accent": "#b45309",
+      "paths": ["apps/backend/**", "migrations/**", "**/*.rs", "**/workers/**"],
+      "nav": [
+        {
+          "label": { "hu": "Adat", "en": "Data" },
+          "items": [
+            "db-migration",
+            "data-import",
+            "s3-storage",
+            "vector-search"
+          ]
+        },
+        {
+          "label": { "hu": "Integráció", "en": "Integration" },
+          "items": [
+            "webhook-manager",
+            "email-mailgun",
+            "notification-system",
+            "scheduled-tasks",
+            "worker-management"
+          ]
+        },
+        {
+          "label": { "hu": "Gyűjtés", "en": "Collection" },
+          "items": ["scraper", "spider"]
+        }
+      ]
+    },
+    {
+      "app_id": "security",
+      "name": { "hu": "Biztonság", "en": "Security" },
+      "icon": "shield",
+      "accent": "#dc2626",
+      "paths": ["**/.env*", "**/secrets/**", "**/security*"],
+      "nav": [
+        {
+          "label": { "hu": "Ellenőrzés", "en": "Checks" },
+          "items": [
+            { "id": "security-audit", "badge": "P0" },
+            { "id": "secret-detection", "badge": "P0" }
+          ]
+        }
+      ]
+    },
+    {
+      "app_id": "quality",
+      "name": { "hu": "Minőség", "en": "Quality" },
+      "icon": "badge-check",
+      "accent": "#16a34a",
+      "paths": ["tests/**", "**/*.test.*", "**/test_*.py", "**/*_test.*"],
+      "nav": [
+        {
+          "label": { "hu": "Teszt", "en": "Testing" },
+          "items": [
+            { "id": "tdd-enforcer", "badge": "P0" },
+            "unit-test-writer",
+            "integration-test",
+            "e2e-test",
+            "webapp-testing"
+          ]
+        },
+        {
+          "label": { "hu": "Review", "en": "Review" },
+          "items": [
+            "code-review",
+            "parallel-reviewer-orchestrator",
+            "code-style",
+            "refactor"
+          ]
+        },
+        {
+          "label": { "hu": "Debug", "en": "Debug" },
+          "items": ["debug-3strike", "auto-iterate"]
+        }
+      ]
+    },
+    {
+      "app_id": "ops",
+      "name": { "hu": "Üzemeltetés", "en": "Operations" },
+      "icon": "rocket",
+      "accent": "#0891b2",
+      "paths": [
+        "docker/**",
+        "infrastructure/**",
+        "**/Dockerfile*",
+        ".github/**",
+        "scripts/deploy*"
+      ],
+      "nav": [
+        {
+          "label": { "hu": "Deploy", "en": "Deploy" },
+          "items": [
+            "deploy-pipeline",
+            "ci-cd-setup",
+            "docker-setup",
+            "server-migration",
+            "changelog-generator"
+          ]
+        },
+        {
+          "label": { "hu": "Hálózat", "en": "Network" },
+          "items": ["caddy-gateway", "cloudflare-cdn"]
+        },
+        {
+          "label": { "hu": "Működés", "en": "Runtime" },
+          "items": [
+            "monitoring-setup",
+            "auto-scale",
+            "backup-strategy",
+            "runbook-generator"
+          ]
+        }
+      ]
+    },
+    {
+      "app_id": "ai",
+      "name": { "hu": "AI orchestráció", "en": "AI orchestration" },
+      "icon": "sparkles",
+      "accent": "#f59e0b",
+      "paths": [
+        ".aios-cli/orchestrator/**",
+        "apps/ai-chat/**",
+        ".codex/**",
+        ".gemini/**"
+      ],
+      "nav": [
+        {
+          "label": { "hu": "Routing", "en": "Routing" },
+          "items": [
+            { "id": "aios-orchestrator", "badge": "P1" },
+            "cli-router",
+            "multi-vendor-consensus",
+            "local-models",
+            "ai-agent-reliability",
+            "agent-teams-coordinator",
+            "workflow-runner",
+            "mcp-builder"
+          ]
+        },
+        {
+          "label": { "hu": "Költség és kontextus", "en": "Cost and context" },
+          "items": [
+            "cost-invariant-check",
+            "token-report-generator",
+            "rtk-optimizer",
+            "rtk-tee-recovery",
+            "context-auditor"
+          ]
+        },
+        {
+          "label": { "hu": "Prompt", "en": "Prompt" },
+          "items": [
+            "prompt-anatomy-template",
+            "prompt-quality-boost",
+            "prompt-templates"
+          ]
+        },
+        {
+          "label": { "hu": "Termék AI", "en": "Product AI" },
+          "items": ["ai-chat-admin"]
+        }
+      ]
+    },
+    {
+      "app_id": "workflow",
+      "name": { "hu": "Munkafolyamat", "en": "Workflow" },
+      "icon": "list-checks",
+      "accent": "#475569",
+      "paths": [
+        "specification/**",
+        "docs/**",
+        "tasks/**",
+        "COORDINATION.md",
+        ".claude/identity/**"
+      ],
+      "nav": [
+        {
+          "label": { "hu": "Tervezés", "en": "Planning" },
+          "items": ["brainstorming", "ask-user-question-orchestrator"]
+        },
+        {
+          "label": { "hu": "Session és memória", "en": "Session and memory" },
+          "items": [
+            "session-continuity",
+            "claude-code-session-handoff",
+            "memory-curator",
+            "autodream",
+            "failed-experiment-curator",
+            "skill-router"
+          ]
+        },
+        {
+          "label": { "hu": "Dokumentáció", "en": "Documentation" },
+          "items": [
+            "docs-generator",
+            "hungarian-docs",
+            "onboarding-wizard",
+            "internal-comms"
+          ]
+        },
+        {
+          "label": { "hu": "Brand", "en": "Brand" },
+          "items": ["brand-auditor", "brand-interview"]
+        }
+      ]
+    },
+    {
+      "app_id": "data",
+      "name": { "hu": "Adatelemzés", "en": "Data analysis" },
+      "icon": "chart-line",
+      "accent": "#2563eb",
+      "paths": ["**/*.ipynb", "**/notebooks/**"],
+      "nav": [
+        {
+          "label": { "hu": "Elemzés", "en": "Analysis" },
+          "items": [
+            "auto-viz",
+            "data-export-pipeline",
+            "dataframe-checkpoint",
+            "jupyter-notebook-editor"
+          ]
+        }
+      ]
+    }
+  ]
+}

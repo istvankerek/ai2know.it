@@ -1,0 +1,14 @@
+{
+  "name": "default",
+  "rate_limit": {
+    "requests_per_second": 2,
+    "delay_randomization_ms": 500
+  },
+  "retry": {
+    "max_attempts": 3,
+    "backoff_ms": 1000
+  },
+  "timeout_ms": 30000,
+  "respect_robots_txt": true,
+  "user_agent": "EverengineBot/1.0 (+https://{{DOMAIN}}/bot)"
+}

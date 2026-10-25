@@ -1,0 +1,88 @@
+# Legacy rendszer mentese (hu.ai2know.it forras, DB dumpok, szemelyes adat, titkok) – SOHA ne kerul gitbe
+/backup/
+
+# Kornyezeti valtozok
+.env
+.env.local
+.env.test
+.env.prod
+environments/.env.local
+environments/.env.test
+environments/.env.prod
+
+# Credentials
+infrastructure/cloudflare/credentials.json
+config/proxies.json
+
+# Node
+node_modules/
+.next/
+dist/
+out/
+
+# Rust
+target/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code personal scope (v6.3)
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# TF.js modellek (nagy fajlok)
+*.bin
+*.pb
+
+# Prompt log (opcionalis – ha nem akarod Git-ben)
+# .claude/prompt-log/
+
+# code-review-graph lokalis DB
+.code-review-graph/
+
+# Auto-generated session memory (PreCompact hook, v5.2)
+.agent_memory.md
+
+# Context Mode SQLite sandbox (v5.4)
+.claude/context-mode.db
+.claude/context-mode.db-journal
+
+# Memory v2 (RAD) – SQLite tranzakcios journal (tranziens, ne commitold)
+.claude/memory/observations.db-journal
+
+# Workflow futasi allapot fajlok (runtime, ne commitold)
+.claude/workflows/state/
+
+# Memory v2 consolidation lock (v7.1, race protection, transient)
+.claude/memory/.consolidation.lock
+
+# RTK tee logs (v7.2, helyi cache, ne commitold)
+~/.local/share/rtk/
+
+# RTK config (v7.2, telepiteskor regenerodik)
+~/.config/rtk/
+
+# AIOS orchestrator ledger (helyi futasi naplo, prompt nelkul)
+.aios-cli/orchestrator/.ledger/
+__pycache__/
+worktrees/
+subprojects/*/
+!subprojects/*.md

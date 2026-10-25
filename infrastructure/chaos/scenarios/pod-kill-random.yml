@@ -1,0 +1,8 @@
+# Chaos Scenario: Veletlen worker kill
+name: pod-kill-random
+description: Veletlen kivalasztott worker process kill
+target: "worker-*"
+action: kill
+interval: 60s
+duration: 5m
+expected_recovery: 15s

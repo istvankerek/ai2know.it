@@ -1,0 +1,22 @@
+# Chaos Engineering - Utemezes
+# Staging: napi 1x (random scenario, 5 perc)
+# Prod: heti 1x (pentek reggel, engedelyezett lista, monitorozott)
+
+staging:
+  cron: "0 3 * * *"
+  scenarios: "random"
+  duration: "5m"
+  alert_channel: "#ops-staging"
+
+production:
+  cron: "0 9 * * 5"
+  scenarios:
+    - database-down
+    - network-partition
+    - pod-kill-random
+    - latency-injection
+  duration: "5m"
+  alert_channel: "#ops-prod"
+  pre_check:
+    - on_call_available: true
+    - kill_switch: "make chaos-abort"

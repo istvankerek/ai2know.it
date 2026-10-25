@@ -1,0 +1,58 @@
+# Worker-ek auto-scale szabalyokkal (6 tipus)
+services:
+  worker-default:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile.worker
+    container_name: ${PROJECT_PREFIX:-ee}_worker_default
+    environment:
+      - WORKER_TYPE=default
+      - NATS_URL=nats://nats:4222
+    depends_on:
+      - nats
+
+  worker-email:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile.worker
+    container_name: ${PROJECT_PREFIX:-ee}_worker_email
+    environment:
+      - WORKER_TYPE=email
+      - NATS_URL=nats://nats:4222
+
+  worker-backup:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile.worker
+    container_name: ${PROJECT_PREFIX:-ee}_worker_backup
+    environment:
+      - WORKER_TYPE=backup
+      - NATS_URL=nats://nats:4222
+
+  worker-ai:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile.worker
+    container_name: ${PROJECT_PREFIX:-ee}_worker_ai
+    environment:
+      - WORKER_TYPE=ai-tasks
+      - NATS_URL=nats://nats:4222
+      - AI_COST_LIMIT_HOURLY=50
+
+  worker-scraper:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile.worker
+    container_name: ${PROJECT_PREFIX:-ee}_worker_scraper
+    environment:
+      - WORKER_TYPE=scraper
+      - NATS_URL=nats://nats:4222
+
+  worker-spider:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile.worker
+    container_name: ${PROJECT_PREFIX:-ee}_worker_spider
+    environment:
+      - WORKER_TYPE=spider
+      - NATS_URL=nats://nats:4222

@@ -1,0 +1,363 @@
+{
+  "env": {
+    "MAX_THINKING_TOKENS": "8000",
+    "BASH_MAX_OUTPUT_LENGTH": "20000",
+    "MAX_MCP_OUTPUT_TOKENS": "8000",
+    "CLAUDE_CODE_EFFORT_LEVEL": "medium",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-haiku-4-5-20251001",
+    "CLAUDE_CODE_FORK_SUBAGENT": "1",
+    "ENABLE_TOOL_SEARCH": "true",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80",
+    "AI_ADVISOR_ENABLED": "true",
+    "AI_ADVISOR_MODEL": "claude-opus-4-7",
+    "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "0",
+    "AI_MAX_TOKENS_CEILING": "128000",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "AGENT_TEAMS_REDIS_URL": "${REDIS_URL}",
+    "AGENT_TEAMS_MAILBOX_TTL_SECONDS": "3600",
+    "AGENT_TEAMS_LOCK_TIMEOUT_SECONDS": "5",
+    "CONTEXT_MODE_AUTO_THRESHOLD": "5000",
+    "CONTEXT_MODE_PATTERNS": "kubectl,docker logs,gh pr,gh issue,grep",
+    "ROUTINES_DAILY_LIMIT": "25",
+    "ROUTINES_COST_CAP_USD": "50",
+    "AI_ROUTING_ENABLED": "true",
+    "AI_ROUTING_AUTO_DETECT": "true",
+    "AI_ROUTING_ALLOW_OVERRIDE": "true",
+    "AI_MODEL_CRITICAL": "claude-opus-4-7",
+    "AI_MODEL_COMPLEX_EXEC": "claude-sonnet-4-6",
+    "AI_MODEL_COMPLEX_ADVISOR": "claude-opus-4-7",
+    "AI_MODEL_BATCH_EXEC": "claude-sonnet-4-6",
+    "AI_MODEL_BATCH_ADVISOR": "claude-opus-4-6",
+    "AI_MODEL_STANDARD": "claude-sonnet-4-6",
+    "AI_MODEL_MECHANICAL": "claude-haiku-4-5-20251001",
+    "AI_EFFORT_CRITICAL": "max",
+    "AI_EFFORT_COMPLEX": "xhigh",
+    "AI_EFFORT_BATCH": "high",
+    "AI_EFFORT_STANDARD": "high",
+    "AI_EFFORT_MECHANICAL": "low",
+    "AI_ADVISOR_MAX_USES_CRITICAL": "0",
+    "AI_ADVISOR_MAX_USES_COMPLEX": "3",
+    "AI_ADVISOR_MAX_USES_BATCH": "3",
+    "AI_ADVISOR_MAX_USES_STANDARD": "1",
+    "AI_ADVISOR_MAX_USES_MECHANICAL": "0",
+    "AI_TASK_BUDGET_CRITICAL": "64000",
+    "AI_TASK_BUDGET_COMPLEX": "32000",
+    "AI_TASK_BUDGET_BATCH": "32000",
+    "AI_TASK_BUDGET_STANDARD": "16000",
+    "AI_TASK_BUDGET_MECHANICAL": "4000",
+    "DATA_ANALYST_LAYER_ENABLED": "false",
+    "AIOS_ACTIVE_CLI": "claude",
+    "MEMORY_V2_ENABLED": "true",
+    "MEMORY_AUTO_PROMOTE_THRESHOLD": "3",
+    "MEMORY_OBSERVATION_DB": ".claude/memory/observations.db",
+    "RTK_AUTO_REWRITE_ENABLED": "true",
+    "RTK_TELEMETRY_DISABLED": "1",
+    "RTK_TEE_LOG_PATH": "$HOME/.local/share/rtk/tee"
+  },
+  "permissions": {
+    "allow": [
+      "Read **/*",
+      "Write src/**",
+      "Write tests/**",
+      "Write docs/**",
+      "Write tasks/**",
+      "Write .claude/prompt-log/**",
+      "Write .claude/memory/**",
+      "Write .claude/routines/**",
+      "Write .claude/hooks/**",
+      "Write .claude/skills/**",
+      "Write .claude/workflows/**",
+      "Write .claude/identity/**",
+      "Write .claude/commands/**",
+      "Write .claude/rules/**",
+      "Write .aios-cli/**",
+      "Write scripts/**",
+      "Write experiments/**",
+      "Bash(chmod +x *)",
+      "Bash(mkdir -p *)",
+      "Bash(rm -f .claude/routines/scheduled/weekly-memory-curate.yml)",
+      "Bash(npm test)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx prettier --write *)",
+      "Bash(./scripts/*.sh)",
+      "Bash(chmod +x /Users/everengine/Documents/dev/skeleton/scripts/setup-worktree.sh)",
+      "Edit(/.claude/skills/jupyter-notebook-editor/**)",
+      "Edit(/.claude/skills/auto-viz/**)",
+      "Edit(/.claude/skills/dataframe-checkpoint/**)",
+      "Edit(/.claude/skills/data-export-pipeline/**)",
+      "Bash(jq -e '.env.DATA_ANALYST_LAYER_ENABLED == \"false\"' .claude/settings.json)",
+      "Bash(git commit *)",
+      "Edit(/.claude/skills/crud-dla-module/**)",
+      "Edit(/.claude/skills/i18n-required/**)",
+      "Edit(/.claude/skills/audit-trail-mandatory/**)",
+      "Edit(/.claude/skills/permission-rbac/**)",
+      "Edit(/.claude/skills/dla-menu-pattern/**)",
+      "Bash(awk '{print $NF}')",
+      "Bash(grep \"\\\\.sh$\")",
+      "Edit(/.claude/skills/ask-user-question-orchestrator/**)",
+      "Bash(mkdir -p .claude/memory/backup)",
+      "Bash(touch .claude/memory/backup/.gitkeep)",
+      "Edit(/.claude/skills/ai-agent-reliability/**)",
+      "Edit(/.claude/skills/prompt-anatomy-template/**)",
+      "Edit(/.claude/skills/brand-auditor/**)",
+      "Edit(/.claude/skills/memory-curator/**)",
+      "Edit(/.claude/skills/rtk-optimizer/**)",
+      "Edit(/.claude/skills/rtk-tee-recovery/**)",
+      "Edit(/.claude/skills/debug-3strike/**)",
+      "Bash(./.aios-cli/scripts/generate-cli-configs.sh claude *)",
+      "Bash(grep -v '^$')",
+      "Bash(./sync.sh --dry-run --project aio.broker)",
+      "Bash(./sync.sh --yes --project aio.broker)",
+      "WebFetch(domain:rtk-ai.app)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(brew install *)",
+      "Bash(rtk --version)",
+      "Bash(./.aios-cli/scripts/install-rtk.sh)",
+      "Bash(bash .claude/hooks/rtk-rewrite.sh)",
+      "Bash(env -i bash -c 'echo \"{\\\\\"tool_input\\\\\":{\\\\\"command\\\\\":\\\\\"git status\\\\\"}}\" | bash /Users/everengine/Documents/dev/skeleton/.claude/hooks/rtk-rewrite.sh')",
+      "Bash(./sync.sh --yes --force --project aio.broker)",
+      "Bash(rtk session *)",
+      "Bash(rtk gain *)",
+      "Bash(bash tests/skeleton-validation/run-all.sh)",
+      "Read(//Users/everengine/Documents/dev/aios/.claude/**)",
+      "Read(//Users/everengine/Documents/dev/ingatlanok/.claude/**)",
+      "Read(//Users/everengine/Documents/dev/aios/**)",
+      "Read(//Users/everengine/Documents/dev/ingatlanok/**)",
+      "Bash(git mv *)",
+      "Bash(./sync.sh --dry-run)",
+      "Bash(./sync.sh --yes --force --project aios)",
+      "Bash(mkdir -p /Users/everengine/Documents/dev/ingatlanok/.claude/skills/deploy)",
+      "Bash(cp /tmp/ingatlanok-deploy.md /Users/everengine/Documents/dev/ingatlanok/.claude/skills/deploy/SKILL.md)",
+      "Bash(gh auth *)",
+      "Bash(gh api *)",
+      "Bash(git config *)",
+      "Read(//Users/everengine/**)",
+      "Bash(git credential *)",
+      "Bash(git ls-remote *)",
+      "Bash(git cherry-pick *)",
+      "Bash(git stash *)",
+      "Bash(./sync.sh --yes --force --project aiagentday.hu)",
+      "Bash(jq -r '.env | keys[]' /Users/everengine/Documents/dev/skeleton/.claude/settings.json)"
+    ],
+    "deny": [
+      "Write .env*",
+      "Write CLAUDE.md",
+      "Write .claude/settings.json",
+      "Write docker-compose.prod.yml",
+      "Write infrastructure/cloudflare/credentials.json",
+      "Bash(rm -rf *)",
+      "Bash(docker compose down -v)",
+      "Bash(DROP *)",
+      "Bash(DELETE FROM *)"
+    ],
+    "additionalDirectories": [
+      "/Users/everengine/Documents/dev/skeleton/.claude/skills",
+      "/Users/everengine/Documents/dev/skeleton/.claude/skills/crud-dla-module",
+      "/Users/everengine/Documents/dev/skeleton/.claude/hooks",
+      "/Users/everengine/Documents/dev/aibootcamp/aiagentday.hu"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-safety.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-injection.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/skill-router.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-bash-safety.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/rtk-rewrite.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/rtk-filter.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-cap.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-read-warn.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/memory/memory-context-load.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/intelligent-router.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/memory/memory-relevance-check.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/memory/memory-observation-capture.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/auto-lint.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-placeholders.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-brand.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-tdd.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/auto-commit.sh"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-tool-cost.sh"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/notify.sh"
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/agent-teams/teammate-idle.sh"
+          }
+        ]
+      }
+    ],
+    "TaskCreated": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/agent-teams/task-created.sh"
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/agent-teams/task-completed.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/memory/memory-session-summary.sh"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/save-prompt-log.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/memory/memory-promote-patterns.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-end-report.sh"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/save-agent-memory.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-compact-backup.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

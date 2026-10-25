@@ -1,0 +1,64 @@
+name: aibos-bug-hotfix
+description: |
+  Gyors bug javitas pipeline. Prod incident eseten.
+  Rovid pipeline, sebesseg-prioritas.
+  Retro kesobb.
+trigger: manual
+model: claude-sonnet-4-6
+
+steps:
+  - id: reproduce
+    name: "1. Reprodukalo"
+    description: "A hiba reprodukalalsa es azonositasa"
+    skill: debug-3strike
+    prompt: |
+      Reprodukald a hibat. Azonositsd a kivaito okot.
+      Ha 3 kiserleten belul nem sikerul: /clear + brainstorm.
+    outputs:
+      - root_cause
+      - reproduction_steps
+
+  - id: fix
+    name: "2. Javitas"
+    description: "Minimalis, celzott javitas"
+    depends_on: [reproduce]
+    prompt: |
+      Javitsd a hibat a leheto legkisebb valtoztatással.
+      Csak a hibas reszt, a tobbit tartsd meg.
+    outputs:
+      - fix_files
+
+  - id: test
+    name: "3. Tesztek"
+    description: "Gyors teszteles: unit + integracios"
+    depends_on: [fix]
+    prompt: |
+      Ird meg a regresszios tesztet a javitott hibara.
+      Futtasd: ./scripts/test.sh
+      Minden teszt zold kell legyen.
+
+  - id: review
+    name: "4. Gyors review"
+    description: "Biztonsagi es minossegi ellenorzes"
+    skill: code-review
+    depends_on: [test]
+    prompt: |
+      Gyors review: van-e biztonsagi problema vagy regresszio?
+
+  - id: fastdeploy
+    name: "5. Azonnali deploy"
+    description: "Hotfix deploy prod-ra"
+    skill: deploy-pipeline
+    depends_on: [review]
+    prompt: |
+      Deployald a hotfix-et prodra.
+      Hot fix exception – sebesseg-prioritas.
+
+  - id: postmortem
+    name: "6. Postmortem"
+    description: "Mit tanultunk? Memory rogzites."
+    skill: memory-curator
+    depends_on: [fastdeploy]
+    prompt: |
+      Dokumentald a hibat a memory rendszerbe (gotcha tipus).
+      Frissitsd mistakes.md-t ha szukseges.

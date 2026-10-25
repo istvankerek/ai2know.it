@@ -1,0 +1,11 @@
+# Worker Dockerfile – Rust/Axum worker
+FROM rust:1.77-slim AS build
+WORKDIR /app
+RUN apt-get update && apt-get install -y pkg-config libssl-dev
+COPY . .
+RUN cargo build --release --bin worker
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y ca-certificates
+COPY --from=build /app/target/release/worker /usr/local/bin/worker
+CMD ["worker"]

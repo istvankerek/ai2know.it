@@ -1,0 +1,26 @@
+{
+  "app_name": "ai2know.it",
+  "nav": {
+    "home": "Kezdolap",
+    "about": "Rolunk",
+    "contact": "Kapcsolat",
+    "login": "Bejelentkezes",
+    "logout": "Kijelentkezes"
+  },
+  "common": {
+    "loading": "Betoltes...",
+    "save": "Mentes",
+    "cancel": "Megse",
+    "delete": "Torles",
+    "edit": "Szerkesztes",
+    "search": "Kereses...",
+    "back": "Vissza",
+    "next": "Kovetkezo",
+    "previous": "Elozo",
+    "yes": "Igen",
+    "no": "Nem",
+    "confirm": "Megerosites",
+    "error": "Hiba tortent",
+    "success": "Sikeresen elmentve"
+  }
+}

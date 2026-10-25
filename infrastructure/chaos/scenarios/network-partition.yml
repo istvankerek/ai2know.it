@@ -1,0 +1,9 @@
+# Chaos Scenario: Worker ↔ NATS kapcsolat drop
+name: network-partition
+description: Halozati particio a worker es NATS kozott
+target: worker-default
+action: network-partition
+partition_from: nats
+duration: 5m
+expected_recovery: 10s
+runbook: docs/runbooks/worker-queue-stuck.md

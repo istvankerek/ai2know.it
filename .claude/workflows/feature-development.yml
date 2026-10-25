@@ -1,0 +1,125 @@
+name: feature-development
+description: |
+  Engine-agnostic feature fejlesztes Agent Teams orchestration-vel.
+  Hasznalja a v7.4 role-based agenteket (rust-specialist, test-writer, code-reviewer,
+  security-auditor, doc-writer). Kompatibilis Rust/Axum, Node.js, Python backend-ekkel.
+
+  Lepesek: brainstorm -> plan -> implement -> test -> review -> security -> docs -> finalize
+  Becsult ido: 2-6 ora (komplexitas-fuggo)
+trigger: manual
+model: claude-sonnet-4-6
+
+# Pre-flight: AskUserQuestion (v7.1)
+pre_flight:
+  ask_user_question:
+    fields:
+      - feature_name
+      - acceptance_criteria
+      - priority
+      - complexity
+      - affected_modules
+
+steps:
+  - id: brainstorm
+    name: "1. Brainstorming"
+    description: "Otletek es scope tisztazasa"
+    skill: brainstorming
+    prompt: |
+      Elemezd a feature igenyeket. Tedd fel a nehez kerdeseket.
+      Azonositsd a kockazatokat es a potencialis komplexitast.
+    outputs:
+      - feature_scope
+      - risks
+
+  - id: plan
+    name: "2. Tervezes"
+    description: "Reszletes implementacios terv"
+    skill: plan
+    depends_on: [brainstorm]
+    prompt: |
+      A brainstorming alapjan keszits 8-szekcios tervet.
+      Szekciok: erintett fajlok, valtoztatas, kockazatok, fuggosegek,
+      komplexitas, koltseg, tesztek, rollback.
+    approval: required
+    outputs:
+      - implementation_plan
+
+  - id: implement
+    name: "3. Implementacio"
+    description: "Backend specialist (default rust-specialist, override env-vel)"
+    agent: rust-specialist
+    depends_on: [plan]
+    prompt: |
+      Implementald a jovahagyott terv szerint. Feature-based fajlnev,
+      schema-per-service ha PostgreSQL, RFC 7807 hibak.
+    outputs:
+      - source_files
+
+  - id: test
+    name: "4. Tesztek"
+    description: "Test-writer agent generalja a teszteket minden retegen"
+    agent: test-writer
+    depends_on: [implement]
+    parallel: true
+    prompt: |
+      Generald a unit, integration es e2e teszteket.
+      Happy path -> edge case -> error path. Magyar test name-ek.
+    outputs:
+      - test_files
+      - coverage_report
+
+  - id: review
+    name: "5. Code Review"
+    description: "Code-reviewer agent (parhuzamos a test-tel)"
+    agent: code-reviewer
+    depends_on: [implement]
+    parallel: true
+    prompt: |
+      Review-zd a teljes valtoztatast. Output: 🔴 MUST FIX / 🟡 SHOULD FIX / 🟢 NICE TO HAVE.
+    outputs:
+      - review_findings
+
+  - id: security
+    name: "6. Security audit"
+    description: "Security-auditor agent (parhuzamos)"
+    agent: security-auditor
+    depends_on: [implement]
+    parallel: true
+    prompt: |
+      OWASP Top 10, dependency audit, secret detection, auth flow validacio.
+    outputs:
+      - security_findings
+
+  - id: docs
+    name: "7. Dokumentacio"
+    description: "Doc-writer agent dokumentacio-frissites"
+    agent: doc-writer
+    depends_on: [implement]
+    parallel: true
+    prompt: |
+      Frissitsd a dokumentaciot az uj feature-rel.
+      API docs, ADR ha architektura valtozott, README ha publikus.
+    outputs:
+      - doc_files
+
+  - id: finalize
+    name: "8. Finalizalas"
+    description: "Lead osszesiti a review/test/security/docs eredmenyeket"
+    skill: parallel-reviewer-orchestrator
+    depends_on: [test, review, security, docs]
+    prompt: |
+      Osszesitsd a review, test, security, docs eredmenyeket.
+      Ha minden zold (SHIP × SHIP = MERGE): keszitsd elo a PR-t.
+      Ha van piros: listazd a blokkolo problemakat.
+    outputs:
+      - merge_decision
+
+# Post-workflow: memory observation save
+post_workflow:
+  - description: "Memory observation save (autodream-memory-cycle bekapcsolasa)"
+    skill: memory-curator
+
+references:
+  - source: "v7.4 patch Section 7.1"
+  - skill: "parallel-reviewer-orchestrator"
+  - agents: "code-reviewer, test-writer, security-auditor, doc-writer, rust-specialist"

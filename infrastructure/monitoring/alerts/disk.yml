@@ -1,0 +1,18 @@
+groups:
+  - name: disk
+    rules:
+      - alert: DiskSpaceLow
+        expr: (1 - node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "Disk hasznalat > 80%"
+
+      - alert: DiskSpaceCritical
+        expr: (1 - node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 > 95
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          description: "Disk hasznalat > 95% — KRITIKUS"

@@ -1,0 +1,7 @@
+# Chaos Scenario: MinIO disk 90%
+name: disk-fill
+description: MinIO disk feltoltese 90%-ra
+target: minio
+action: disk-fill
+fill_percent: 90
+duration: 5m

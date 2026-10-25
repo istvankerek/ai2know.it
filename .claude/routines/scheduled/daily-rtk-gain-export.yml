@@ -1,0 +1,85 @@
+name: daily-rtk-gain-export
+description: >
+  Napi RTK token-megtakaritas export Prometheus pushgateway-re.
+  Metrikak: rtk_tokens_saved_total, rtk_commands_executed_total,
+  rtk_savings_percentage, rtk_session_adoption_rate.
+license: Everengine v7.2
+priority: P3
+model: claude-haiku-4-5-20251001
+
+schedule:
+  cron: "0 2 * * *"
+  timezone: "UTC"
+  description: "Napi 02:00 UTC"
+
+enabled_when: "command -v rtk &> /dev/null"
+
+env:
+  PROMETHEUS_PUSHGATEWAY: "${PROMETHEUS_PUSHGATEWAY:-http://localhost:9091}"
+  RTK_PROJECT_LABEL: "${RTK_PROJECT_LABEL:-skeleton}"
+
+steps:
+  - id: collect_metrics
+    name: "RTK gain metrikak osszegyujtese"
+    type: bash
+    bash: |
+      mkdir -p /tmp/rtk-export
+      rtk gain --all --format json --since 1 > /tmp/rtk-export/gain-$(date +%Y%m%d).json
+      rtk session --format json > /tmp/rtk-export/session-$(date +%Y%m%d).json
+
+  - id: parse_metrics
+    name: "Parse + Prometheus formatum"
+    type: bash
+    bash: |
+      GAIN=/tmp/rtk-export/gain-$(date +%Y%m%d).json
+      SESSION=/tmp/rtk-export/session-$(date +%Y%m%d).json
+
+      TOKENS_SAVED=$(jq -r '.total_tokens_saved // 0' "$GAIN")
+      COMMANDS=$(jq -r '.total_commands // 0' "$GAIN")
+      SAVINGS_PCT=$(jq -r '.savings_percentage // 0' "$GAIN")
+      ADOPTION=$(jq -r '.adoption_rate // 0' "$SESSION")
+
+      cat > /tmp/rtk-export/metrics.prom <<EOF
+      # HELP rtk_tokens_saved_total RTK altal megtakaritott tokenek (kumulativ)
+      # TYPE rtk_tokens_saved_total counter
+      rtk_tokens_saved_total{project="$RTK_PROJECT_LABEL"} $TOKENS_SAVED
+
+      # HELP rtk_commands_executed_total RTK-val futtatott parancsok szama
+      # TYPE rtk_commands_executed_total counter
+      rtk_commands_executed_total{project="$RTK_PROJECT_LABEL"} $COMMANDS
+
+      # HELP rtk_savings_percentage Atlagos token megtakaritas %-ban
+      # TYPE rtk_savings_percentage gauge
+      rtk_savings_percentage{project="$RTK_PROJECT_LABEL"} $SAVINGS_PCT
+
+      # HELP rtk_session_adoption_rate RTK adoption rate session-okon belul
+      # TYPE rtk_session_adoption_rate gauge
+      rtk_session_adoption_rate{project="$RTK_PROJECT_LABEL"} $ADOPTION
+      EOF
+
+  - id: push_to_prometheus
+    name: "Push Prometheus pushgateway-re"
+    type: bash
+    bash: |
+      if curl -sf "$PROMETHEUS_PUSHGATEWAY" >/dev/null 2>&1; then
+        curl -fsS --data-binary @/tmp/rtk-export/metrics.prom \
+          "$PROMETHEUS_PUSHGATEWAY/metrics/job/rtk_export/instance/$RTK_PROJECT_LABEL"
+        echo "[OK] Metrikak pushed: $PROMETHEUS_PUSHGATEWAY"
+      else
+        echo "[FIGYELMEZTETES] Pushgateway nem elerheto: $PROMETHEUS_PUSHGATEWAY"
+        echo "Skip — local-only run"
+      fi
+
+  - id: cleanup
+    name: "Regi exportok torlese (>30 nap)"
+    type: bash
+    bash: find /tmp/rtk-export -mtime +30 -delete 2>/dev/null || true
+
+failure_handling:
+  on_error: "log_only"
+  retry_count: 0
+  notify_slack: false
+
+references:
+  - source: "v7.2 patch Section 8"
+  - skill: "rtk-optimizer"

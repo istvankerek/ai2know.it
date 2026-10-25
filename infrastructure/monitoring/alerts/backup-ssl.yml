@@ -1,0 +1,18 @@
+groups:
+  - name: backup-ssl
+    rules:
+      - alert: BackupOlderThan24h
+        expr: time() - backup_last_success_timestamp > 86400
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          description: "Utolso sikeres backup > 24 oraja"
+
+      - alert: SSLCertExpiringSoon
+        expr: ssl_cert_not_after - time() < 259200
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          description: "SSL tanusitvany < 3 napon belul lejar"

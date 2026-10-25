@@ -1,0 +1,59 @@
+# {{PROJECT_NAME}} – Gemini CLI Instructions
+
+> Ez a fájl automatikusan generált.
+> Forrás: `.aios-cli/core/` + `.aios-cli/adapters/gemini/GEMINI.md.template`
+> Módosítsd a forrást, ne ezt a fájlt.
+> Generálás: `.aios-cli/scripts/generate-cli-configs.sh gemini`
+
+{{CORE_INSTRUCTIONS}}
+
+{{CORE_ECOSYSTEM}}
+
+{{CORE_LESSONS}}
+
+---
+
+## Gemini CLI – Specifikus Kiegészítések
+
+### Mikor használd a Gemini CLI-t
+
+A Gemini CLI nagy kontextus és web kutatás feladatokra erős:
+- 2M token context: teljes monorepo audit egyszerre
+- Web grounding: naprakész dokumentáció, könyvtár verziók
+- Multi-modal: kép, diagram elemzés kóddokumentációban
+- Hosszú kontextusú összefoglalók (riport, changelog)
+
+### Gemini korlátok
+
+- Hook rendszer (csak Claude Code-ban elérhető)
+- Kritikus production döntések (használj multi-vendor-consensus-t)
+
+### Projekt skill rendszer
+
+A közös projekt skill source: `.aios-cli/skills/`.
+Gemini nem automatikus Claude-style skill loader, ezért a generált skill indexet
+használd triggerként: releváns feladatnál olvasd be a megfelelő `SKILL.md` fájlt.
+
+{{SKILL_INDEX}}
+
+### Konvenciók
+
+{{CORE_CONVENTIONS_SUMMARY}}
+
+### Nagy kontextus munkafolyamat
+
+Gemini CLI-vel a teljes kódbázis betölthető:
+
+```bash
+# Teljes skeleton audit
+gemini --context ./src --context ./apps prompt "Ellenőrizd az összes TypeScript strict szabálysértést"
+
+# Web grounding
+gemini --grounding prompt "Mi a legújabb Vite 6 breaking change?"
+```
+
+### Aktív CLI
+
+`AIOS_ACTIVE_CLI={{ACTIVE_CLI}}`
+
+Váltáshoz futtasd: `.aios-cli/scripts/generate-cli-configs.sh gemini`

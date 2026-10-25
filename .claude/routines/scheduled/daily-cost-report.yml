@@ -1,0 +1,29 @@
+# .claude/routines/scheduled/daily-cost-report.yml
+# Napi koltseg riport (v5.6)
+
+name: daily-cost-report
+description: >
+  Napi AI koltseg az elozo napra. FinOps Slack post, top consumers, alert
+  ha > target.
+
+trigger:
+  type: scheduled
+  cron: "0 9 * * *"             # Napi 09:00 UTC
+
+prompt: |
+  Generalj napi AI koltseg riportot:
+    - Total cost yesterday
+    - Top 5 cost consumers (per fejleszto, per session)
+    - Model breakdown (Opus 4.7 / Opus 4.6 / Sonnet 4.6 / Haiku 4.5)
+    - Routing accuracy (auto-categorize vs manual override)
+    - Anomaly detection (3-sigma)
+
+  Source: ClickHouse AI audit log
+  Output: post #finops Slack csatornaba (markdown)
+
+model: claude-haiku-4-5-20251001  # Olcso, gyors
+connectors:
+  - slack
+permissions:
+  - read_clickhouse
+  - post_slack_message

@@ -1,0 +1,40 @@
+# .claude/routines/api-triggered/deploy-verification.yml
+# CD pipeline trigger (v5.6)
+
+name: deploy-verification
+description: >
+  CD pipeline hivja deploy utan. Smoke checks, error log scan,
+  go/no-go dontes a release csatornaba.
+
+trigger:
+  type: api
+  endpoint: "https://api.claude.com/v1/routines/deploy-verification"
+  auth: bearer_token
+
+prompt: |
+  Uj deploy tortent:
+  - Environment: ${payload.environment}
+  - Version: ${payload.version}
+  - Commit: ${payload.commit_sha}
+  - Deployed at: ${payload.timestamp}
+
+  Futtasd le a smoke check-et:
+    1. Health endpoint check (/api/health)
+    2. Critical path test (login → dashboard → main action)
+    3. Error log scan (Sentry: utolso 10 perc)
+    4. Metrics check (Grafana: CPU, memory, latency spike)
+
+  Ha minden OK → post "✅ Deploy verified: ${version}" #release-${env}
+  Ha problema → post "⚠️ Deploy issues: ${problem}" + runbook link
+
+  Adj vissza strukturalt JSON response-t:
+    { "verdict": "go|no-go", "issues": [...], "runbook": "..." }
+
+model: claude-haiku-4-5-20251001  # Gyors smoke test
+connectors:
+  - sentry
+  - slack
+permissions:
+  - read_repo
+  - read_sentry
+  - post_slack_message

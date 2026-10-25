@@ -1,0 +1,93 @@
+{
+  "mcpServers": {
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "postgres": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-postgres"],
+      "env": {
+        "DATABASE_URL": "${POSTGRES_CONN}"
+      }
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-filesystem", "--root", "./src"],
+      "env": {}
+    },
+    "sentry": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@nicholasoxford/sentry-mcp"],
+      "env": {
+        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}",
+        "SENTRY_ORG": "${SENTRY_ORG}",
+        "SENTRY_PROJECT": "${SENTRY_PROJECT}"
+      }
+    },
+    "hyperbrowser": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@hyperbrowserai/mcp"],
+      "env": {
+        "HYPERBROWSER_API_KEY": "${HYPERBROWSER_API_KEY}"
+      }
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7"],
+      "env": {}
+    },
+    "code-review-graph": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["code-review-graph", "serve"],
+      "env": {}
+    },
+    "skills": {
+      "type": "stdio",
+      "command": "pse-skills",
+      "args": [],
+      "env": {
+        "SKILLS_DB": "${SKILLS_DB:-~/Documents/AI/skills/skills_search.db}",
+        "SKILLS_ROOT": "${SKILLS_ROOT:-~/Documents/AI/skills/collected_skills}"
+      }
+    },
+    "claude-context": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@zilliz/claude-context-mcp"],
+      "env": {
+        "VECTOR_DB_TYPE": "qdrant",
+        "VECTOR_DB_URL": "${QDRANT_URL}",
+        "VECTOR_DB_API_KEY": "${QDRANT_API_KEY}",
+        "INDEX_NAME": "${PROJECT_SLUG:-default}-codebase",
+        "EMBEDDING_MODEL": "voyage-code-3"
+      }
+    },
+    "context-mode": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@everengine/context-mode"],
+      "env": {
+        "CONTEXT_MODE_DB_PATH": ".claude/context-mode.db"
+      }
+    },
+    "brave-search": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    }
+  }
+}

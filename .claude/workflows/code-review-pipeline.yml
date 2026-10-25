@@ -1,0 +1,97 @@
+name: code-review-pipeline
+description: |
+  Multi-agent code review Agent Teams-szel. Egy felelos agent (lead) koordinal,
+  a teammate-ek parhuzamosan futtatjak a SPEC + QUALITY + SECURITY review-t.
+  v6.2 parallel-reviewer-orchestrator pattern es v7.4 role-based agentek alapjan.
+
+  Triggerek: PR review, /project:review.
+  Becsult ido: 15-30 perc (PR meret-fuggo).
+trigger: manual
+model: claude-sonnet-4-6
+
+env:
+  AGENT_TEAMS_ENABLED: true   # CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 already set in settings
+
+steps:
+  - id: gather_context
+    name: "1. PR kontextus osszegyujtes"
+    description: "Lead agent a PR-t es a kapcsolodo fajlokat olvassa"
+    agent: sonnet-worker
+    prompt: |
+      Olvasd a PR diff-et, a CLAUDE.md-t, es az erintett modul/skills-eket.
+      Hatarozd meg a review scope-ot.
+    outputs:
+      - pr_summary
+      - affected_files
+      - context
+
+  - id: spec_review
+    name: "2. SPEC review (parallel)"
+    description: "Code-reviewer ellenorzi: helyes-e a tervhez kepest, konvenciok"
+    agent: code-reviewer
+    depends_on: [gather_context]
+    parallel: true
+    prompt: |
+      Review checklist:
+      - Helyes-e a tervhez kepest?
+      - Feature-based fajlnev konvencio?
+      - {Action}{Entity} pattern?
+      - Magyar UI copy?
+    outputs:
+      - spec_review_result
+
+  - id: quality_review
+    name: "3. QUALITY review (parallel)"
+    description: "Code-reviewer (masodik fork) ellenorzi: error handling, perf, maintain"
+    agent: code-reviewer
+    depends_on: [gather_context]
+    parallel: true
+    prompt: |
+      Review checklist:
+      - Error handling (Result<T,E> Rust, try-catch async TS)
+      - Teljesitmeny (N+1, re-render, blocking I/O)
+      - Karbantarthatosag (SRP, DRY, beszedes nevek)
+      - Tesztelhetoseg (DI, pure functions)
+    outputs:
+      - quality_review_result
+
+  - id: security_review
+    name: "4. SECURITY review (parallel)"
+    description: "Security-auditor agent OWASP / dependency / secret check"
+    agent: security-auditor
+    depends_on: [gather_context]
+    parallel: true
+    prompt: |
+      OWASP Top 10, dependency audit, secret detection, auth flow,
+      input validation, CORS, rate limiting, PII logging.
+    outputs:
+      - security_review_result
+
+  - id: synthesize
+    name: "5. Konszolidacio (lead)"
+    description: "Lead osszesiti a 3 review eredmenyt -> SHIP / NO-SHIP decision"
+    agent: opus-architect
+    depends_on: [spec_review, quality_review, security_review]
+    prompt: |
+      Osszesitsd a 3 review-t. Decision matrix:
+      - SHIP × SHIP × SHIP = ✅ MERGE
+      - Barhol NO-SHIP = ❌ BLOCK + listazas
+      - Ket SHIP + egy NO-SHIP-pel valtoztatassal = 🟡 PR comment
+
+      Output: rovid summary + decision + akcio.
+    approval: optional
+    outputs:
+      - merge_decision
+      - blocking_issues
+
+# Hooks (Agent Teams events)
+hooks:
+  on_task_created: ".claude/hooks/agent-teams/task-created.sh"
+  on_task_completed: ".claude/hooks/agent-teams/task-completed.sh"
+  on_teammate_idle: ".claude/hooks/agent-teams/teammate-idle.sh"
+
+references:
+  - source: "v7.4 patch Section 7"
+  - skill: "parallel-reviewer-orchestrator"
+  - agents: "code-reviewer, security-auditor, opus-architect, sonnet-worker"
+  - command: "/project:review"

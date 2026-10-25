@@ -1,0 +1,44 @@
+{
+  "common": {
+    "loading": "Betöltés…",
+    "error": "Hiba történt",
+    "save": "Mentés",
+    "cancel": "Mégsem",
+    "back": "Vissza",
+    "open": "Megnyitás",
+    "close": "Bezárás"
+  },
+  "auth": {
+    "login": "Belépés SkillPass.ID-vel",
+    "logout": "Kijelentkezés",
+    "login_required": "A folytatáshoz be kell jelentkezned.",
+    "session_expired": "A munkamenet lejárt, kérlek lépj be újra."
+  },
+  "nav": {
+    "dashboard": "Vezérlőpult",
+    "trainings": "Képzéseim",
+    "catalog": "Katalógus",
+    "profile": "Profil",
+    "settings": "Beállítások"
+  },
+  "dashboard": {
+    "title": "Vezérlőpult",
+    "subtitle": "Üdvözöllek a portálon"
+  },
+  "trainings": {
+    "title": "Képzéseim",
+    "empty": "Még nem vettél részt képzésen.",
+    "status_enrolled": "Regisztrált",
+    "status_in_progress": "Folyamatban",
+    "status_completed": "Teljesítve",
+    "status_cancelled": "Lemondva"
+  },
+  "account_center": {
+    "profile": "Személyes adatok",
+    "security": "Biztonság és bejelentkezés",
+    "documents": "Dokumentumok",
+    "access": "Hozzáféréseim",
+    "invoices": "Számlák",
+    "open_account_center": "SkillPass.ID fiók megnyitása"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "dashboard": {
+    "title": "Sentry Errors",
+    "uid": "sentry-errors",
+    "version": 1,
+    "tags": ["sentry", "errors", "runtime"],
+    "panels": [
+      {
+        "id": 1,
+        "title": "Unresolved hibak szama",
+        "type": "gauge",
+        "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
+        "targets": [
+          {
+            "expr": "sentry_unresolved_issues_count",
+            "legendFormat": "Unresolved"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Hibak idovonalon",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 18, "x": 6, "y": 0 },
+        "targets": [
+          {
+            "expr": "rate(sentry_events_total[5m])",
+            "legendFormat": "Errors/sec"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Top 5 hiba tipusonkent",
+        "type": "bargauge",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+        "targets": [
+          {
+            "expr": "topk(5, sentry_issues_count_by_type)",
+            "legendFormat": "{{ error_type }}"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Erintett felhasznalok szama",
+        "type": "stat",
+        "gridPos": { "h": 8, "w": 6, "x": 12, "y": 8 },
+        "targets": [
+          {
+            "expr": "sentry_affected_users_count",
+            "legendFormat": "Users"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Legutobbi hibak",
+        "type": "table",
+        "gridPos": { "h": 8, "w": 6, "x": 18, "y": 8 },
+        "targets": [
+          {
+            "expr": "sentry_recent_issues",
+            "format": "table"
+          }
+        ]
+      }
+    ],
+    "time": { "from": "now-24h", "to": "now" },
+    "refresh": "1m"
+  },
+  "overwrite": true
+}

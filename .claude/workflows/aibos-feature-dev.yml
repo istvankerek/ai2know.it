@@ -1,0 +1,93 @@
+name: aibos-feature-dev
+description: |
+  Teljes feature fejlesztes pipeline aiBOS-hoz.
+  9 lepes, becsult ido: 4-8 ora.
+trigger: manual
+model: claude-sonnet-4-6
+
+steps:
+  - id: brainstorm
+    name: "1. Brainstorming"
+    description: "Otletek es scope tisztazasa"
+    skill: brainstorming
+    prompt: |
+      Elemezd az uj feature igenyeket. Tedd fel a nehez kerdeseket.
+      Azonositsd a kockazatokat es a potencialis komplexitast.
+    outputs:
+      - feature_scope
+      - risks
+
+  - id: plan
+    name: "2. Tervezes"
+    description: "Reszletes implementacios terv"
+    skill: plan
+    depends_on: [brainstorm]
+    prompt: |
+      A brainstorming alapjan keszits reszletes tervet.
+      Lepesek, fajlok, sorrend.
+    outputs:
+      - implementation_plan
+
+  - id: tdd
+    name: "3. TDD – Failing tesztek"
+    description: "Failing tesztek irasa ELOSZOR"
+    skill: tdd-enforcer
+    depends_on: [plan]
+    prompt: |
+      Ird meg a failing teszteket a tervezett feature-re.
+      Unit es integration tesztek egyarant.
+    outputs:
+      - test_files
+
+  - id: impl
+    name: "4. Implementacio"
+    description: "Production kod irasa a tesztekre"
+    depends_on: [tdd]
+    prompt: |
+      Implementald a feature-t ugy, hogy a tesztek zoldek legyenek.
+      Kovetsd a code-style.md szabalyokat.
+    outputs:
+      - implementation_files
+
+  - id: test
+    name: "5. Tesztek futtatasa"
+    description: "Minden teszt zold kell legyen"
+    depends_on: [impl]
+    prompt: |
+      Futtasd le az osszes tesztet: ./scripts/test.sh
+      Ha barmely teszt piros, javitsd.
+
+  - id: review
+    name: "6. Kod review"
+    description: "Parhuzamos review: security, perf, style"
+    skill: parallel-reviewer-orchestrator
+    depends_on: [test]
+    prompt: |
+      Vegezz teljes kod review-t a valtoztatott fajlokon.
+      Biztonsag, teljesitmeny, kod minosseg.
+
+  - id: commit
+    name: "7. Commit"
+    description: "Valtozasok commitolasa"
+    depends_on: [review]
+    prompt: |
+      Commitold a valtozasokat. Kovess konvencionalos commit format.
+      Ne commitolj direkten main-re.
+
+  - id: deploy
+    name: "8. Deploy"
+    description: "Staging kornyezetbe deploy"
+    skill: deploy-pipeline
+    depends_on: [commit]
+    prompt: |
+      Deployald a feature-t staging kornyezetbe.
+      Ellenorizd a deploy sikeresseget.
+
+  - id: notify
+    name: "9. Ertesites"
+    description: "Csapat ertesitese"
+    skill: internal-comms
+    depends_on: [deploy]
+    prompt: |
+      Ertesitsd a csapatot a feature elkeszulterol.
+      3P format: Progress, Plans, Problems.

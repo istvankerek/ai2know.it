@@ -1,0 +1,7 @@
+# Subprojektek listája (plan-v16). A validator: .aios-cli/scripts/validate-project-layout.py
+# type: nested (saját .git, gitignore-olt) | subtree (git subtree, egy history)
+
+[subprojects.example]
+type = "nested"
+path = "subprojects/example"
+role = "rövid szerep"

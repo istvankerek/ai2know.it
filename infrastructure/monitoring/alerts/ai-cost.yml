@@ -1,0 +1,10 @@
+groups:
+  - name: ai-cost
+    rules:
+      - alert: AIHourlyCostHigh
+        expr: increase(ai_cost_total[1h]) > 50
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          description: "AI koltseg > $50/ora"

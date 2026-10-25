@@ -1,0 +1,29 @@
+# PRODUKCIO – L1 APPROVE SZUKSEGES!
+# Hasznalat: make prod
+
+services:
+  frontend:
+    build:
+      target: prod
+    restart: always
+
+  admin:
+    build:
+      target: prod
+    restart: always
+
+  backend:
+    build:
+      target: prod
+    restart: always
+    environment:
+      - RUST_LOG=warn
+
+  postgres:
+    restart: always
+
+  redis:
+    restart: always
+
+  caddy:
+    restart: always

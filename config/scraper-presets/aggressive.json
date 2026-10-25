@@ -1,0 +1,14 @@
+{
+  "name": "aggressive",
+  "rate_limit": {
+    "requests_per_second": 5,
+    "delay_randomization_ms": 200
+  },
+  "retry": {
+    "max_attempts": 5,
+    "backoff_ms": 500
+  },
+  "timeout_ms": 15000,
+  "respect_robots_txt": true,
+  "user_agent": "EverengineBot/1.0 (+https://{{DOMAIN}}/bot)"
+}

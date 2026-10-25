@@ -1,0 +1,16 @@
+# .claude/routines/_budget.yml
+# Routines global limits (v5.6)
+
+global_limits:
+  max_daily_routines: 25      # Team plan
+  max_concurrent: 5
+  alert_threshold: 0.8        # 80%-nal Slack warning
+
+circuit_breaker:
+  enabled: true
+  max_failures_per_hour: 10   # Ha 10+ routine hibazik 1h alatt → disable
+  notification: "#ops-emergency"
+
+cost_cap:
+  daily_usd_limit: 50
+  auto_disable_at: 0.9        # 90% limitnel routine-ok disable-elodnek

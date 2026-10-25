@@ -1,0 +1,47 @@
+# .claude/routines/scheduled/weekly-autodream.yml
+# Heti projekt autodream (v5.6)
+
+name: weekly-autodream
+description: >
+  Heti projekt autodream – prompt-log, tasks/lessons.md, COORDINATION.md,
+  Git history, .agent_memory.md elemzese. Kimenet: rules/ frissitesi
+  javaslat, ADR javaslat, skill audit.
+
+trigger:
+  type: scheduled
+  cron: "0 18 * * FRI"           # Pentek 18:00 UTC
+  timezone: "Europe/Budapest"
+
+prompt: |
+  Futtasd le az autodream skill-t ezen a repon.
+  Input forrasok:
+    - .claude/prompt-log/ (utolso 7 nap)
+    - COORDINATION.md
+    - Git history (utolso 7 nap)
+    - tasks/lessons.md (uj tanulsagok)
+    - .agent_memory.md (ha van)
+    - .claude/memory/observations.db (v6.5)
+
+  Kimenet:
+    - rules/ frissitesi javaslat (ha ismetlodo minta 3+ alkalommal)
+    - ADR javaslat (ha uj architektura dontes volt)
+    - Skill audit (melyik skill nem aktivalodott amikor kellett volna)
+
+  Posztolj osszefoglalot a #dev-autodream Slack csatornaba.
+  NE modosits semmit automatikusan (L1 guardrail).
+  Ha rules/ javaslat szuletett, nyiss draft PR-t.
+
+repo: "{{REPO_OWNER}}/{{REPO_NAME}}"
+connectors:
+  - github
+  - slack
+model: claude-sonnet-4-6
+advisor:
+  model: claude-opus-4-6        # Batch API-n 4.6 olcsobb!
+  max_uses: 3
+batch_api: true
+
+permissions:
+  - read_repo
+  - create_pr
+  - post_slack_message

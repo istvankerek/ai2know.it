@@ -1,0 +1,30 @@
+# Lokalis fejlesztes – hot reload, debug portok
+# Hasznalat: docker compose -f docker-compose.yml -f docker-compose.local.yml up
+
+services:
+  frontend:
+    build:
+      target: dev
+    volumes:
+      - ../apps/frontend/src:/app/src
+    environment:
+      - NODE_ENV=development
+
+  admin:
+    build:
+      target: dev
+    volumes:
+      - ../apps/admin/src:/app/src
+    environment:
+      - NODE_ENV=development
+
+  backend:
+    build:
+      target: dev
+    volumes:
+      - ../apps/backend/src:/app/src
+    environment:
+      - RUST_LOG=debug
+    ports:
+      - "8080:8080"
+      - "9229:9229"

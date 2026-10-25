@@ -1,0 +1,11 @@
+{
+  "dashboard": {
+    "title": "disk-usage",
+    "uid": "disk-usage",
+    "version": 1,
+    "panels": [],
+    "time": { "from": "now-1h", "to": "now" },
+    "refresh": "30s"
+  },
+  "overwrite": true
+}

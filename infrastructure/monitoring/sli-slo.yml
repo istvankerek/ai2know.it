@@ -1,0 +1,40 @@
+# SLI/SLO definiciok szolgaltatasonkent
+# v5.0 – Prometheus metrikai alapjan
+
+services:
+  - name: api-gateway
+    sli:
+      availability: "rate(http_requests_total{status!~'5..'}[5m]) / rate(http_requests_total[5m])"
+      latency: "histogram_quantile(0.95, http_request_duration_seconds_bucket)"
+    slo:
+      availability: 99.9
+      latency_p95_ms: 500
+      error_budget_days: 30
+
+  - name: worker-queue
+    sli:
+      throughput: "rate(nats_messages_processed_total[5m])"
+      lag: "nats_queue_depth"
+    slo:
+      lag_max: 1000
+      processing_time_p95_s: 10
+
+  - name: ai-chat
+    sli:
+      availability: "rate(ai_requests_total{status='success'}[5m]) / rate(ai_requests_total[5m])"
+      latency: "histogram_quantile(0.95, ai_response_duration_seconds_bucket)"
+    slo:
+      availability: 99.5
+      latency_p95_ms: 5000
+
+  - name: database
+    sli:
+      availability: "pg_up"
+      replication_lag: "pg_replication_lag_seconds"
+    slo:
+      availability: 99.99
+      replication_lag_max_s: 5
+
+# Recovery targets
+rto_hours: 4
+rpo_hours: 1

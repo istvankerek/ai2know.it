@@ -1,0 +1,47 @@
+# Everengine skeleton - Codex project config (v7.6)
+
+profile = "balanced"
+model = "gpt-5.3-codex"
+model_reasoning_effort = "medium"
+model_verbosity = "medium"
+plan_mode_reasoning_effort = "high"
+project_doc_max_bytes = 32768
+project_doc_fallback_filenames = ["CLAUDE.md"]
+
+[profiles.fast]
+model = "gpt-5.3-codex-spark"
+model_reasoning_effort = "low"
+model_verbosity = "low"
+plan_mode_reasoning_effort = "medium"
+service_tier = "fast"
+
+[profiles.balanced]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "medium"
+model_verbosity = "medium"
+plan_mode_reasoning_effort = "high"
+service_tier = "fast"
+
+[profiles.deep]
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+model_verbosity = "medium"
+plan_mode_reasoning_effort = "xhigh"
+service_tier = "fast"
+
+[agents]
+max_threads = 4
+max_depth = 1
+job_max_runtime_seconds = 1800
+
+[agents.explorer_fast]
+config_file = "agents/explorer-fast.toml"
+description = "Fast read-only codebase explorer for targeted lookup and plan evidence."
+
+[agents.worker_standard]
+config_file = "agents/worker-standard.toml"
+description = "Standard implementation worker for scoped code changes after the plan is clear."
+
+[agents.reviewer_deep]
+config_file = "agents/reviewer-deep.toml"
+description = "Deep read-only reviewer for security, prod, architecture, and high-risk changes."

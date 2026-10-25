@@ -1,0 +1,6 @@
+# Chaos Scenario: DNS failure
+name: dns-failure
+description: Cloudflare DNS elerhetetlen szimulacio
+target: cloudflare-tunnel
+action: dns-block
+duration: 5m

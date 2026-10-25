@@ -1,0 +1,45 @@
+# .worktreeinclude — v6.3
+# Ezeket a fajlokat/mappakat symlinkeli a parent-bol minden uj worktree-be.
+# A scripts/setup-worktree.sh hasznalja.
+#
+# Konvencio: relativ path-ok a skeleton root-tol.
+# Mappa = symlinkkent atveszi (egyetlen forras igazsag).
+# Fajl = ugyanugy symlink (lokalisan modositva minden worktree-re hat).
+
+# Claude konfig
+.claude/
+
+# MCP servers konfig
+.mcp.json
+
+# Projekt instructiok
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+GEMINI.md
+
+# Codex projekt config (v7.6)
+.codex/
+
+# Kornyezeti valtozok
+.env
+.env.local
+
+# NPM csomag konfig
+package.json
+package-lock.json
+
+# Identity (csapatszintu, ne legyen worktree-szinten valtozhato)
+# .claude/identity/ mar a .claude/ alatt van
+
+# Memory v2 (csapatszintu, lasd v6.5)
+# .claude/memory/ mar a .claude/ alatt van
+
+# Workflows (csapatszintu)
+# .claude/workflows/ mar a .claude/ alatt van
+
+# Routines (csapatszintu)
+# .claude/routines/ mar a .claude/ alatt van
+
+# Identity-cli (multi-CLI shared kernel, v6.4)
+.aios-cli/

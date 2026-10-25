@@ -1,0 +1,18 @@
+groups:
+  - name: cpu-memory
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "CPU hasznalat > 90% tobb mint 5 percig"
+
+      - alert: HighMemoryUsage
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          description: "Memoria hasznalat > 90%"

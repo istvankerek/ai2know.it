@@ -1,0 +1,60 @@
+# {{PROJECT_NAME}}
+
+> Ez a fájl automatikusan generált.
+> Forrás: `.aios-cli/core/` + `.aios-cli/adapters/claude/CLAUDE.md.template`
+> Módosítsd a forrást, ne ezt a fájlt.
+> Generálás: `.aios-cli/scripts/generate-cli-configs.sh claude`
+
+{{CORE_INSTRUCTIONS}}
+
+{{CORE_ECOSYSTEM}}
+
+{{CORE_LESSONS}}
+
+{{CORE_CONVENTIONS_SUMMARY}}
+
+---
+
+## Claude Code – Specifikus Kiegészítések
+
+### Skill rendszer
+
+A közös skill source-of-truth: `.aios-cli/skills/`.
+A `.claude/skills/` mappa automatikus Claude Code belépési pont; a generátor
+az új közös skilleket ide linkeli, a meglévő másolatokat a forrásra tükrözi
+(a megszűnt útvonalak listája: `.aios-cli/removed-paths.txt`).
+
+Fontos skill-ek:
+- `tdd-enforcer` – TDD Iron Law betartatása (P0)
+- `brand-auditor` – brand konzisztencia ellenőrzés
+- `parallel-reviewer-orchestrator` – párhuzamos kód review
+- `debug-3strike` – 3 sikertelen próbálkozás után /clear + brainstorm
+- `multi-vendor-consensus` – 3 CLI párhuzamos futtatás kritikus döntésekhez
+- `cli-router` – feladathoz legjobb CLI javaslat
+
+{{SKILL_INDEX}}
+
+### Hook rendszer
+
+A `.claude/hooks/` hookjai automatikusan futnak:
+- `PreToolUse`: check-safety, check-injection, skill-router
+- `UserPromptSubmit`: intelligent-router (modell routing)
+- `PostToolUse`: auto-lint, check-placeholders, check-brand, check-tdd
+
+### Parancsok
+
+Projekt parancsok: `/project:{command}` formában elérhetők.
+
+```
+/project:plan          – terv készítés implementáció előtt
+/project:review        – párhuzamos kód review
+/project:deploy        – deploy pipeline
+/project:cli-switch    – CLI váltás (claude/codex/gemini)
+/project:brand-check   – brand audit
+/project:context-check – context economy audit
+```
+
+### Settings
+
+`.claude/settings.json` tartalmazza az env var-okat, permission-öket és hook konfigurációt.
+Aktív CLI: `AIOS_ACTIVE_CLI={{ACTIVE_CLI}}`

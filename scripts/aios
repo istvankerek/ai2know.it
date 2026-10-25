@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# AIOS orchestrator belepes: feladat -> CLI / modell routing (plan-v15 F2).
+# Hasznalat: scripts/aios route "feladat" | run "feladat" [--dry-run] | providers | budget | explain [TIER]
+set -euo pipefail
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="${ROOT_DIR}/.aios-cli/orchestrator${PYTHONPATH:+:${PYTHONPATH}}"
+exec python3 -m aios "$@"

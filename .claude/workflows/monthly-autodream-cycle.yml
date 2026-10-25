@@ -1,0 +1,55 @@
+name: monthly-autodream-cycle
+description: |
+  Havi karbantartasi cycle: memoria rendrakas, pattern cleanup, riport.
+  Becsult ido: 4 ora.
+trigger: scheduled
+schedule: "0 10 1 * *"
+model: claude-sonnet-4-6
+
+steps:
+  - id: lessons
+    name: "1. Leckek osszegyujtese"
+    description: "Havi tapasztalatok osszegzese"
+    prompt: |
+      Olvasd at a tasks/lessons.md fajlt.
+      Csoportositsd a leckeket kategoria szerint.
+      Javasolj prioritasokat a kovetkezo honapra.
+
+  - id: memory_cleanup
+    name: "2. Memory cleanup"
+    description: "Elavult observationok torlese"
+    skill: memory-curator
+    depends_on: [lessons]
+    prompt: |
+      Futtasd a memory cleanup-ot: /project:memory cleanup 90
+      Ellenorizd az observations statisztikat.
+
+  - id: patterns
+    name: "3. Pattern promotalas"
+    description: "Uj mintak felismerese es rogzitese"
+    skill: memory-curator
+    depends_on: [memory_cleanup]
+    prompt: |
+      Promotald a 3+ alkalommal elofordulo observationokat.
+      Frissitsd patterns.md-t.
+
+  - id: autodream
+    name: "4. Autodream futtatasa"
+    description: "Projekt memoria rendrakas"
+    skill: autodream
+    depends_on: [patterns]
+    prompt: |
+      Futtasd az autodream skill-t a projekt teljes attekintesere.
+      Frissitsd global.md-t az uj tapasztalatokkal.
+
+  - id: report
+    name: "5. Havi riport"
+    description: "Osszefoglalo a csapatnak"
+    skill: internal-comms
+    depends_on: [autodream]
+    prompt: |
+      Generalj havi riportot:
+      - Elvegzett munka osszegzese
+      - Uj mintak es leckek
+      - Kovetkezo honap prioritasai
+      3P format (Progress/Plans/Problems).

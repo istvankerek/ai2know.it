@@ -1,0 +1,29 @@
+# Scraper + Spider + Playwright kontenerek
+services:
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.40.0-jammy
+    container_name: ${PROJECT_PREFIX:-ee}_playwright
+    environment:
+      - BROWSER=chromium
+
+  scraper:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile.worker
+    container_name: ${PROJECT_PREFIX:-ee}_scraper
+    environment:
+      - WORKER_TYPE=scraper
+      - PLAYWRIGHT_URL=ws://playwright:3000
+    depends_on:
+      - playwright
+
+  spider:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile.worker
+    container_name: ${PROJECT_PREFIX:-ee}_spider
+    environment:
+      - WORKER_TYPE=spider
+      - PLAYWRIGHT_URL=ws://playwright:3000
+    depends_on:
+      - playwright

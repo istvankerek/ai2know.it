@@ -1,0 +1,150 @@
+# Everengine Base Compose – ai2know.it
+# Hasznalat: make local (+ local override)
+
+services:
+  # --- ADATBAZISOK ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: ${PROJECT_PREFIX:-ee}_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../infrastructure/postgres/init:/docker-entrypoint-initdb.d
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7
+    container_name: ${PROJECT_PREFIX:-ee}_mongodb
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "${MONGODB_PORT:-27017}:27017"
+
+  redis:
+    image: redis:7-alpine
+    container_name: ${PROJECT_PREFIX:-ee}_redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- QUEUE ---
+  nats:
+    image: nats:2-alpine
+    container_name: ${PROJECT_PREFIX:-ee}_nats
+    command: ["--jetstream", "--store_dir=/data"]
+    volumes:
+      - nats_data:/data
+    ports:
+      - "${NATS_PORT:-4222}:4222"
+      - "8222:8222"
+
+  # --- TAROLAS ---
+  minio:
+    image: minio/minio:latest
+    container_name: ${PROJECT_PREFIX:-ee}_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "9001:9001"
+
+  # --- VEKTOR DB ---
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: ${PROJECT_PREFIX:-ee}_qdrant
+    volumes:
+      - qdrant_data:/qdrant/storage
+    ports:
+      - "${QDRANT_PORT:-6333}:6333"
+
+  # --- ALKALMAZASOK ---
+  frontend:
+    build:
+      context: ../apps/frontend
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_PREFIX:-ee}_frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
+  admin:
+    build:
+      context: ../apps/admin
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_PREFIX:-ee}_admin
+    ports:
+      - "${ADMIN_PORT:-3001}:3001"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_PREFIX:-ee}_backend
+    env_file:
+      - ../environments/.env.local
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_started
+
+  ai-chat:
+    build:
+      context: ../apps/ai-chat
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_PREFIX:-ee}_ai_chat
+    ports:
+      - "${AI_CHAT_PORT:-8081}:8081"
+    depends_on:
+      - qdrant
+      - backend
+
+  # --- GATEWAY ---
+  caddy:
+    image: caddy:2-alpine
+    container_name: ${PROJECT_PREFIX:-ee}_caddy
+    volumes:
+      - ../infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ../infrastructure/caddy/error-pages:/srv/error-pages
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - admin
+      - backend
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  nats_data:
+  minio_data:
+  qdrant_data:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,65 @@
+# Token + Cost Budget Envelope Template (v7.5 "Lean Mind")
+#
+# Ez egy SABLON — minden projektnek a saját értékeit kell beírnia a
+# `decisions/v7.5.md` HITL-finomított envelope alapján.
+#
+# Default-DENY policy: ha egy tier nincs explicit definialva, NEM hasznalhato.
+# A skeleton-szintu ervenyek **placeholder**-ek — projekt-szinten felulirhatok.
+#
+# HITL questions (Q-1 ... Q-10) lasd: specification/skeleton-specifications/compass_artifact_*.md
+# es projekt `decisions/v7.5.md` (kitoltendo).
+
+version: 7.5
+default_policy: DENY     # NEM hard-enforce skeleton-szinten, csak documentation
+
+tiers:
+  Master:
+    description: "AIOS Master tier — orchestrator, planning, system control"
+    weekly_token_envelope: 5_000_000          # placeholder
+    weekly_usd_envelope:   100.0              # placeholder
+    permitted_models: [claude-opus-4-7, claude-sonnet-4-6]
+    prompt_caching: required
+    notes: "Critical reasoning, low volume, high quality"
+
+  Worker:
+    description: "AIOS Worker tier — execution, tool-call workers"
+    weekly_token_envelope: 50_000_000         # placeholder
+    weekly_usd_envelope:   50.0               # placeholder
+    permitted_models: [claude-haiku-4-5, claude-sonnet-4-6]
+    batch_processing: preferred
+    notes: "High volume, low intensity, batchable"
+
+  External:
+    description: "External — Claude Code subscription / direct API spend"
+    weekly_token_envelope: 30_000_000         # placeholder (Max20x subscription tipikus)
+    weekly_usd_envelope:   80.0               # placeholder
+    permitted_models: [claude-haiku-4-5, claude-sonnet-4-6, claude-opus-4-7]
+    notes: "Developer personal coding (Claude Code CLI) — NEVER mix with Master/Worker tier."
+
+  Local:
+    description: "Local inference (MLX, Ollama, llama.cpp) — quality-tracked, zero-cost"
+    weekly_token_envelope: unlimited
+    weekly_usd_envelope:   0.0
+    permitted_models: [qwen3.5:27b, qwen3.5:7b, kimi-k2.5:cloud, glm-5.1:cloud]
+    quality_floor: 0.85                       # vs Sonnet baseline on golden-set
+    notes: "Boilerplate, classify, scaffold — boilerplate + privacy-sensitive workloads"
+
+# Alert thresholds
+alerts:
+  cache_hit_ratio_min: 0.5                   # <0.5 → Drift::PromptCacheUnderutilized
+  subagent_opus_cost_ratio_max: 0.2           # >0.2 subagent calls on Opus → Drift::SubagentRouteSuboptimal
+  envelope_warning_pct: 75                    # 🟡 figyelmeztetes
+  envelope_critical_pct: 90                   # 🔴 kritikus
+
+# Reporting
+reports:
+  daily_cadence: "09:00"
+  weekly_cadence: "Mon 10:00"
+  output: ".claude/everengine/sessions/sessions-{YYYY-MM}.csv"
+
+# References
+references:
+  - specification: "skeleton-specifications/compass_artifact_*-_text_markdown.md"
+  - rule: ".claude/rules/00-token-discipline.md"
+  - skill: "token-report-generator"
+  - skill: "cost-invariant-check"

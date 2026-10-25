@@ -1,0 +1,8 @@
+# Megszuntetett skeleton utvonalak (plan-v15). A generator es a sync.sh olvassa.
+# Formatum: soronkent egy, a projekt gyokerehez relativ utvonal.
+.aios-cli/skills/everpass-auth
+.aios-cli/skills/everpass-admin-experience
+.claude/skills/everpass-auth
+.claude/skills/everpass-admin-experience
+.aios-cli/scripts/extract-everpass-admin-reference.mjs
+.claude/identity/brand-evpass.md

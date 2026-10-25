@@ -1,0 +1,11 @@
+{
+  "dashboard": {
+    "title": "container-stats",
+    "uid": "container-stats",
+    "version": 1,
+    "panels": [],
+    "time": { "from": "now-1h", "to": "now" },
+    "refresh": "30s"
+  },
+  "overwrite": true
+}
